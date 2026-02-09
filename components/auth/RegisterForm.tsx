@@ -99,48 +99,23 @@ export default function RegisterForm() {
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div>
                         <div>
                             <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">Date of Birth</label>
                             <input
                                 type="date"
                                 className="w-full px-4 py-3 rounded-2xl border border-gray-300 ... placeholder:text-gray-400 text-gray-900 hover:border-gray-400" />
                         </div>
-                        <div>
-                            <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">Gender</label>
-                            <select className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400 bg-white">
-                                <option value="">Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                                <option value="prefer-not-to-say">Prefer not to say</option>
-                            </select>
-                        </div>
+
                     </div>
 
                     <div>
-                        <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">Address</label>
-                        <input
-                            type="text"
-                            placeholder="Street address"
-                            className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400 mb-2"
-                        />
-                        <div className="grid grid-cols-3 gap-2">
+                        <div>
+                            <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">Address</label>
                             <input
-                                type="text"
-                                placeholder="City"
-                                className="px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400"
-                            />
-                            <input
-                                type="text"
-                                placeholder="State"
-                                className="px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400"
-                            />
-                            <input
-                                type="text"
-                                placeholder="ZIP"
-                                className="px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400"
-                            />
+                                type="tel"
+                                placeholder="Address"
+                                className="w-full px-4 py-3 rounded-2xl border border-gray-300 ... placeholder:text-gray-400 text-gray-900 hover:border-gray-400" />
                         </div>
                     </div>
 
@@ -151,7 +126,7 @@ export default function RegisterForm() {
                             <option value="">Select your role</option>
                             <option value="bidder">Bidder</option>
                             <option value="seller">Seller</option>
-                            <option value="admin">Admin</option>
+                            {/* <option value="admin">Admin</option> */}
                         </select>
                     </div>
 

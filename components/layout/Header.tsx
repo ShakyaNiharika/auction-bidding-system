@@ -8,7 +8,7 @@ import Button from '../ui/custom-button/Button';
 const navigation = [
     { name: 'Home', href: '/' },
     { name: 'How It Works', href: '/how-it-works' },
-    { name: 'Blog', href: '/blog' },
+    // { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
 ];
 

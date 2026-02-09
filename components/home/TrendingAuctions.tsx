@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import Button from '@/components/ui/custom-button/Button';
 
 // Extended mock data with Sugarcane theme
@@ -103,9 +104,11 @@ export default function TrendingAuctions() {
                                             {item.price}
                                         </p>
                                     </div>
-                                    <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 px-6 rounded-lg font-semibold h-10">
-                                        Bid now
-                                    </Button>
+                                    <Link href={`/auctions/${item?.id}`}>
+                                        <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 px-6 rounded-lg font-semibold h-10">
+                                            View Details
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
