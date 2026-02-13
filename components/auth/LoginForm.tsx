@@ -5,10 +5,58 @@ import Button from '@/components/ui/custom-button/Button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import usePostLogin from '@/hooks/auth/usePostLogin';
+import { loginSchema, LoginFormData } from '@/validations/authValidation';
+import * as yup from 'yup';
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+    const loginMutation = usePostLogin();
+
+    // Form state
+    const [formData, setFormData] = useState<LoginFormData>({
+        email: '',
+        password: '',
+    });
+
+    // Validation errors state
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        // Clear error on change
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: '' });
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setErrors({});
+
+        try {
+            await loginSchema.validate(formData, { abortEarly: false });
+
+            // Validation passed — call API
+            loginMutation.mutate(formData, {
+                onSuccess: () => {
+                    router.push('/');
+                },
+            });
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const fieldErrors: Record<string, string> = {};
+                err.inner.forEach((e) => {
+                    if (e.path && !fieldErrors[e.path]) {
+                        fieldErrors[e.path] = e.message;
+                    }
+                });
+                setErrors(fieldErrors);
+            }
+        }
+    };
 
     return (
         <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-[850px] min-h-[500px] overflow-hidden relative flex flex-col md:flex-row mx-auto">
@@ -26,22 +74,29 @@ export default function LoginForm() {
                 </div>
 
                 {/* Form */}
-                <form className="space-y-3 max-w-sm mx-auto w-full text-left">
+                <form onSubmit={handleSubmit} className="space-y-3 max-w-sm mx-auto w-full text-left">
                     <div>
-                        <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">Email</label>
+                        <label className="text-xs font-medium text-gray-600 ml-1 mb-1 ">Email</label>
                         <input
                             type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             placeholder="Email"
-                            className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400"
+                            className={`w-full px-4 py-3 rounded-2xl border ${errors.email ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                         />
+                        {errors.email && <p className="text-red-500 text-xs mt-1 ml-1">{errors.email}</p>}
                     </div>
 
                     <div className="relative">
                         <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">Password</label>
                         <input
                             type={showPassword ? "text" : "password"}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
                             placeholder="Password"
-                            className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 hover:border-gray-400"
+                            className={`w-full px-4 py-3 rounded-2xl border ${errors.password ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                         />
                         <button
                             type="button"
@@ -50,12 +105,17 @@ export default function LoginForm() {
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
+                        {errors.password && <p className="text-red-500 text-xs mt-1 ml-1">{errors.password}</p>}
                     </div>
 
                     <a href="#" className="text-xs font-semibold text-gray-900 block mt-1 hover:underline">Forgot your password?</a>
 
-                    <Button className="w-full py-3 rounded-full text-base font-bold mt-4 bg-primary hover:bg-primary/90 text-white shadow-none transition-transform active:scale-95">
-                        Log in
+                    <Button
+                        type="submit"
+                        disabled={loginMutation.isPending}
+                        className="w-full py-3 rounded-full text-base font-bold mt-4 bg-primary hover:bg-primary/90 text-white shadow-none transition-transform active:scale-95 disabled:opacity-50"
+                    >
+                        {loginMutation.isPending ? 'Logging in...' : 'Log in'}
                     </Button>
 
                     <div className="relative my-4">
@@ -80,10 +140,10 @@ export default function LoginForm() {
                 </form>
 
                 <div className="mt-6 text-[11px] text-gray-500 leading-tight">
-                    By continuing, you agree to BIDS AWSOME's <a href="#" className="text-gray-800 font-bold hover:underline">Terms of Service</a> and acknowledge you've read our <a href="#" className="text-gray-800 font-bold hover:underline">Privacy Policy</a>.
+                    By continuing, you agree to BIDS&apos;s <a href="#" className="text-gray-800 font-bold hover:underline">Terms of Service</a> and acknowledge you&apos;ve read our <a href="#" className="text-gray-800 font-bold hover:underline">Privacy Policy</a>.
                     <div className="border-t border-gray-200 my-3 w-10 mx-auto"></div>
                     <Link href="/auth/registration" scroll={false} replace className="text-gray-800 font-bold hover:underline text-xs">
-                        Not on BIDS AWSOME yet? Sign up
+                        Not on BIDS yet? Sign up
                     </Link>
                 </div>
             </div>

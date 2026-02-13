@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Footer from '@/components/layout/Footer';
-// import { Providers } from '@/components/providers';
+import QueryProvider from '@/providers/QueryProvider';
 import './globals.css';
 import Header from '@/components/layout/Header';
 
@@ -22,14 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="min-h-screen bg-gray-50">
-        {/* <Providers> */}
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          {children}
-        </main>
-        {modal}
-        <Footer />
-        {/* </Providers> */}
+        <QueryProvider>
+          <Header />
+          <main className="container mx-auto px-4 py-8">
+            {children}
+          </main>
+          {modal}
+          <Footer />
+        </QueryProvider>
       </body>
     </html>
   );
