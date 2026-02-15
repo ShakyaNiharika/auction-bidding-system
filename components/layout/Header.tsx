@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Button from '../ui/custom-button/Button';
+import { useAuth } from '@/context/AuthContext';
+import { User, LogOut, ChevronDown, UserCircle2 } from 'lucide-react';
 
 const navigation = [
     { name: 'Home', href: '/' },
@@ -14,8 +16,22 @@ const navigation = [
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
+    const { user, logout, isLoading } = useAuth();
+    const accountMenuRef = useRef<HTMLDivElement>(null);
+
+    // Close account menu when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) {
+                setIsAccountMenuOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Check which auth page is active
     const isLoginPage = pathname === '/auth/loginPage';
@@ -60,65 +76,109 @@ export default function Header() {
                             {/* Search icon */}
                         </button>
 
-                        {/* Auth Buttons */}
+                        {/* Auth / Account Buttons */}
                         <div className="flex items-center space-x-2">
-                            {/* Sign In Button */}
-                            {/* <Link
-                                href="/auth/loginPage"
-                                scroll={false}
-                            >
-                                <Button
-                                    variant={isLoginPage ? "primary" : "outline"}
-                                    size="sm"
-                                    className={`transition-all duration-200 ${isLoginPage ? 'shadow-md' : ''}`}
-                                >
-                                    <span className={isLoginPage ? 'text-white' : 'text-primary'}>
-                                        Sign In
-                                    </span>
-                                </Button>
-                            </Link> */}
-                            <Link
-                                href="/auth/loginPage"
-                                scroll={false}
-                            >
-                                <Button
-                                    variant="primary"
-                                    size="sm"
-                                >
-                                    <span>Sign In</span>
-                                </Button>
-                            </Link>
+                            {!isLoading && user ? (
+                                <div className="relative" ref={accountMenuRef}>
+                                    <button
+                                        onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                                        className="flex items-center space-x-2 px-3 py-2 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 bg-white shadow-sm"
+                                    >
+                                        <div className="w-7 h-7 bg-red-100 rounded-full flex items-center justify-center">
+                                            <User size={16} className="text-red-600 font-bold" />
+                                        </div>
+                                        <span className="text-sm font-semibold text-gray-700 max-w-[100px] truncate">
+                                            {user.username}
+                                        </span>
+                                        <ChevronDown size={14} className={`text-gray-400 transition-transform duration-200 ${isAccountMenuOpen ? 'rotate-180' : ''}`} />
+                                    </button>
 
-                            {/* Sign Up Button */}
-                            <Link
-                                href="/auth/registration"
-                                scroll={false}
-                            >
-                                <Button
-                                    variant={isRegistrationPage ? "primary" : "outline"}
-                                    size="sm"
-                                    className={`transition-all duration-200 ${isRegistrationPage ? 'shadow-md' : ''}`}
-                                >
-                                    <span className={isRegistrationPage ? 'text-white' : 'text-primary'}>
-                                        Sign Up
-                                    </span>
-                                </Button>
-                            </Link>
+                                    {/* Account Dropdown */}
+                                    {isAccountMenuOpen && (
+                                        <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-2xl bg-white p-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in duration-200">
+                                            <div className="px-3 py-3 border-b border-gray-100 mb-1">
+                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Signed in as</p>
+                                                <p className="text-sm font-bold text-gray-900 truncate">{user.email}</p>
+                                            </div>
+
+                                            <Link
+                                                href="/profile"
+                                                onClick={() => setIsAccountMenuOpen(false)}
+                                                className="group flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-red-600 transition-colors"
+                                            >
+                                                <UserCircle2 className="mr-3 h-5 w-5 text-gray-400 group-hover:text-red-600" />
+                                                My Profile
+                                            </Link>
+
+                                            <button
+                                                onClick={() => {
+                                                    logout();
+                                                    setIsAccountMenuOpen(false);
+                                                }}
+                                                className="group flex w-full items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors mt-1"
+                                            >
+                                                <LogOut className="mr-3 h-5 w-5 text-gray-400 group-hover:text-red-600" />
+                                                Logout
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : !isLoading ? (
+                                <>
+                                    <Link
+                                        href="/auth/loginPage"
+                                        scroll={false}
+                                    >
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
+                                            className="font-bold rounded-full px-5"
+                                        >
+                                            <span>Sign In</span>
+                                        </Button>
+                                    </Link>
+
+                                    <Link
+                                        href="/auth/registration"
+                                        scroll={false}
+                                        className="hidden sm:block"
+                                    >
+                                        <Button
+                                            variant={isRegistrationPage ? "primary" : "outline"}
+                                            size="sm"
+                                            className={`font-bold rounded-full px-5 transition-all duration-200 ${isRegistrationPage ? 'shadow-md' : ''}`}
+                                        >
+                                            <span className={isRegistrationPage ? 'text-white' : 'text-primary'}>
+                                                Sign Up
+                                            </span>
+                                        </Button>
+                                    </Link>
+                                </>
+                            ) : (
+                                <div className="animate-pulse flex space-x-2">
+                                    <div className="h-9 w-24 bg-gray-100 rounded-full"></div>
+                                    <div className="h-9 w-24 bg-gray-100 rounded-full"></div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Mobile Menu Button */}
-                        {/* <button
+                        <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="p-2 text-gray-600 hover:text-gray-900 md:hidden"
                         >
-                            {isMenuOpen ? 'X' : '☰'}
-                        </button> */}
+                            {isMenuOpen ? (
+                                <span className="text-xl font-bold">✕</span>
+                            ) : (
+                                <span className="text-xl">☰</span>
+                            )}
+                        </button>
                     </div>
                 </div>
 
                 {/* Mobile Menu */}
                 {isMenuOpen && (
-                    <div className="md:hidden border-t py-4">
+                    <div className="md:hidden border-t py-4 animate-in slide-in-from-top duration-300">
                         <div className="flex flex-col space-y-3">
                             {navigation.map((item) => (
                                 <Link
@@ -136,37 +196,62 @@ export default function Header() {
                                     {item.name}
                                 </Link>
                             ))}
-                            <div className="pt-4 space-y-3">
-                                <Link
-                                    href="/auth/loginPage"
-                                    scroll={false}
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="w-full"
-                                >
-                                    <Button
-                                        variant={isLoginPage ? "primary" : "outline"}
-                                        className="w-full"
-                                    >
-                                        <span className={isLoginPage ? 'text-white' : 'text-primary'}>
-                                            Sign In
-                                        </span>
-                                    </Button>
-                                </Link>
-                                <Link
-                                    href="/auth/registration"
-                                    scroll={false}
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="w-full"
-                                >
-                                    <Button
-                                        variant={isRegistrationPage ? "primary" : "outline"}
-                                        className="w-full"
-                                    >
-                                        <span className={isRegistrationPage ? 'text-white' : 'text-primary'}>
-                                            Sign Up
-                                        </span>
-                                    </Button>
-                                </Link>
+                            <div className="pt-4 space-y-3 border-t border-gray-100 mt-2">
+                                {!user ? (
+                                    <>
+                                        <Link
+                                            href="/auth/loginPage"
+                                            scroll={false}
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="w-full"
+                                        >
+                                            <Button
+                                                variant={isLoginPage ? "primary" : "outline"}
+                                                className="w-full rounded-full font-bold"
+                                            >
+                                                <span className={isLoginPage ? 'text-white' : 'text-primary'}>
+                                                    Sign In
+                                                </span>
+                                            </Button>
+                                        </Link>
+                                        <Link
+                                            href="/auth/registration"
+                                            scroll={false}
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="w-full"
+                                        >
+                                            <Button
+                                                variant={isRegistrationPage ? "primary" : "outline"}
+                                                className="w-full rounded-full font-bold"
+                                            >
+                                                <span className={isRegistrationPage ? 'text-white' : 'text-primary'}>
+                                                    Sign Up
+                                                </span>
+                                            </Button>
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href="/profile"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="flex items-center px-3 py-3 text-base font-medium text-gray-700 bg-gray-50 rounded-xl"
+                                        >
+                                            <User className="mr-3 h-5 w-5 text-red-600" />
+                                            My Profile
+                                        </Link>
+                                        <button
+                                            onClick={() => {
+                                                logout();
+                                                setIsMenuOpen(false);
+                                            }}
+                                            className="flex w-full items-center px-3 py-3 text-base font-medium text-white bg-red-600 rounded-xl"
+                                        >
+                                            <LogOut className="mr-3 h-5 w-5" />
+                                            Logout
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

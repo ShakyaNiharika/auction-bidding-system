@@ -2,6 +2,8 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface LoginPayload {
     email: string;
@@ -21,6 +23,9 @@ interface LoginResponse {
 }
 
 const usePostLogin = () => {
+    const { login } = useAuth();
+    const router = useRouter();
+
     const loginMutation = useMutation<LoginResponse, Error, LoginPayload>({
         mutationFn: async (data: LoginPayload) => {
             try {
@@ -36,18 +41,17 @@ const usePostLogin = () => {
             }
         },
         onSuccess: (data: LoginResponse) => {
-            // Store the access token
-            if (data?.access_token) {
-                localStorage.setItem("userToken", data.access_token);
-            }
-            // Store user info
-            if (data?.user) {
-                localStorage.setItem("user", JSON.stringify(data.user));
-            }
-            toast.success("Login successful!");
-            window.location.href = '/';
+            // Store user info and token in context
+            if (data?.user && data?.access_token) {
+                login(data.user, data.access_token);
+                toast.success("Login successful!");
+                // router.push('/');
+                window.location.href = '/';
 
 
+
+
+            }
         },
         onError: (error: Error) => {
             console.error("Login mutation error:", error);

@@ -4,6 +4,7 @@ import Footer from '@/components/layout/Footer';
 import QueryProvider from '@/providers/QueryProvider';
 import './globals.css';
 import Header from '@/components/layout/Header';
+import { AuthProvider } from '@/context/AuthContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,12 +24,14 @@ export default function RootLayout({
     <html lang="en" className={inter.className}>
       <body className="min-h-screen bg-gray-50">
         <QueryProvider>
-          <Header />
-          <main className="container mx-auto px-4 py-8">
-            {children}
-          </main>
-          {modal}
-          <Footer />
+          <AuthProvider>
+            <Header />
+            <main className="container mx-auto px-4 py-8">
+              {children}
+            </main>
+            {modal}
+            <Footer />
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

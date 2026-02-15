@@ -12,7 +12,7 @@ import * as yup from 'yup';
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
-    const loginMutation = usePostLogin();
+    const { mutate: loginMutation, isPending: isLoginLoading } = usePostLogin();
 
     // Form state
     const [formData, setFormData] = useState<LoginFormData>({
@@ -40,7 +40,7 @@ export default function LoginForm() {
             await loginSchema.validate(formData, { abortEarly: false });
 
             // Validation passed — call API
-            loginMutation.mutate(formData, {
+            loginMutation(formData, {
                 onSuccess: () => {
                     router.push('/');
                 },
@@ -112,10 +112,10 @@ export default function LoginForm() {
 
                     <Button
                         type="submit"
-                        disabled={loginMutation.isPending}
+                        disabled={isLoginLoading}
                         className="w-full py-3 rounded-full text-base font-bold mt-4 bg-primary hover:bg-primary/90 text-white shadow-none transition-transform active:scale-95 disabled:opacity-50"
                     >
-                        {loginMutation.isPending ? 'Logging in...' : 'Log in'}
+                        {isLoginLoading ? 'Logging in...' : 'Log in'}
                     </Button>
 
                     <div className="relative my-4">
