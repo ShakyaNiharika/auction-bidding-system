@@ -45,12 +45,13 @@ const usePostLogin = () => {
             if (data?.user && data?.access_token) {
                 login(data.user, data.access_token);
                 toast.success("Login successful!");
-                // router.push('/');
-                window.location.href = '/';
 
-
-
-
+                // Role-based redirection
+                if (data.user.role === 'seller') {
+                    window.location.href = '/dashboard';
+                } else {
+                    window.location.href = '/';
+                }
             }
         },
         onError: (error: Error) => {

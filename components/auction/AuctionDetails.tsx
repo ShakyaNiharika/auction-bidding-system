@@ -3,12 +3,46 @@
 import Image from 'next/image';
 import Button from '@/components/ui/custom-button/Button';
 import { Heart, Facebook, Twitter, Mail, Plus, Share2, Timer, ChevronRight, ChevronLeft } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGetAuctionById } from '@/hooks/auction/useAuctionById';
+import { usePlaceBid } from '@/hooks/auction/usePlaceBid';
+import { useSocket } from '@/context/SocketContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function AuctionDetails({ id }: { id?: string }) {
     const { data: item, isLoading, error } = useGetAuctionById(id || '');
     const [activeImage, setActiveImage] = useState(0);
+    const [bidAmount, setBidAmount] = useState<string>('');
+    const { mutate: placeBid, isPending: isPlacingBid } = usePlaceBid();
+    const { socket } = useSocket();
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        if (!socket || !id) return;
+
+        // Join the auction room
+        socket.emit('joinAuction', { auctionId: id });
+
+        // Listen for new bids
+        socket.on('newBid', (data: any) => {
+            console.log('Real-time bid received:', data);
+
+            // Update the React Query cache instantly
+            queryClient.setQueryData(['auction', id], (oldData: any) => {
+                if (!oldData) return oldData;
+                return {
+                    ...oldData,
+                    current_price: data.current_price,
+                };
+            });
+        });
+
+        // Cleanup: leave the room when component unmounts
+        return () => {
+            socket.emit('leaveAuction', { auctionId: id });
+            socket.off('newBid');
+        };
+    }, [socket, id, queryClient]);
 
     if (isLoading) {
         return (
@@ -42,6 +76,17 @@ export default function AuctionDetails({ id }: { id?: string }) {
     ];
 
     const currentPrice = item.current_price || item.starting_price;
+
+    const handlePlaceBid = () => {
+        if (!id) return;
+        const amount = parseFloat(bidAmount);
+        if (isNaN(amount) || amount <= currentPrice) {
+            return;
+        }
+        placeBid({ id, amount }, {
+            onSuccess: () => setBidAmount('')
+        });
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -132,11 +177,26 @@ export default function AuctionDetails({ id }: { id?: string }) {
                     <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
                         <div className="flex items-center gap-4">
                             <label className="text-sm font-medium text-gray-700">Quantity ({item.unit}) :</label>
-                            <span className="font-bold">{item.quantity}</span>
+                            <span className="font-bold text-gray-700">{item.quantity}</span>
                         </div>
 
-                        <Button className="w-full h-12 text-lg font-bold bg-[var(--primary)] hover:bg-blue-700 text-white rounded shadow-lg shadow-blue-200">
-                            Place Bid
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-gray-700">Your Bid Amount (Rs.)</label>
+                            <input
+                                type="number"
+                                value={bidAmount}
+                                onChange={(e) => setBidAmount(e.target.value)}
+                                placeholder={`Enter Rs. ${currentPrice + 1} or more`}
+                                className="w-full h-12 px-4  text-gray-700 rounded border border-gray-300 focus:ring-2 focus:ring-[var(--primary)] outline-none transition-all"
+                            />
+                        </div>
+
+                        <Button
+                            onClick={handlePlaceBid}
+                            // disabled={isPlacingBid || !bidAmount || parseFloat(bidAmount) <= currentPrice}
+                            className="w-full h-12 text-lg font-bold bg-[var(--primary)] hover:bg-blue-700 text-white rounded shadow-lg shadow-blue-200"
+                        >
+                            {isPlacingBid ? 'Placing Bid...' : 'Place Bid'}
                         </Button>
 
                         <div className="flex items-center justify-between text-sm pt-2">

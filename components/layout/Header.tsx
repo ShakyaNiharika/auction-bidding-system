@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Button from '../ui/custom-button/Button';
 import { useAuth } from '@/context/AuthContext';
-import { User, LogOut, ChevronDown, UserCircle2 } from 'lucide-react';
+import { User, LogOut, ChevronDown, UserCircle2, LayoutDashboard } from 'lucide-react';
 
 const navigation = [
     { name: 'Home', href: '/' },
@@ -36,6 +36,11 @@ export default function Header() {
     // Check which auth page is active
     const isLoginPage = pathname === '/auth/loginPage';
     const isRegistrationPage = pathname === '/auth/registration';
+
+    // Don't show header on dashboard routes (for Seller isolation)
+    if (pathname?.startsWith('/dashboard')) {
+        return null;
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -109,6 +114,17 @@ export default function Header() {
                                                 <UserCircle2 className="mr-3 h-5 w-5 text-gray-400 group-hover:text-red-600" />
                                                 My Profile
                                             </Link>
+
+                                            {user.role === 'seller' && (
+                                                <Link
+                                                    href="/dashboard"
+                                                    onClick={() => setIsAccountMenuOpen(false)}
+                                                    className="group flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors mt-1"
+                                                >
+                                                    <LayoutDashboard className="mr-3 h-5 w-5 text-gray-400 group-hover:text-red-600" />
+                                                    Admin Portal
+                                                </Link>
+                                            )}
 
                                             <button
                                                 onClick={() => {

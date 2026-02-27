@@ -53,3 +53,53 @@ export const useGetAuctionById = (id: string): UseQueryResult<Auction, unknown> 
         retry: false,
     });
 };
+export const useGetMyAuctions = (): UseQueryResult<Auction[], unknown> => {
+    return useQuery({
+        queryKey: ["my-auctions"],
+        queryFn: async () => {
+            try {
+                const response = await api.get("auctions/seller/me");
+                return response?.data;
+            } catch (error: any) {
+                const errorMessage = error?.response?.data?.message || "Failed to fetch your auctions";
+                toast.error(errorMessage);
+                throw new Error(errorMessage);
+            }
+        },
+        retry: false,
+    });
+};
+
+export const useGetParticipants = (): UseQueryResult<any[], unknown> => {
+    return useQuery({
+        queryKey: ["participants"],
+        queryFn: async () => {
+            try {
+                const response = await api.get("auctions/participants");
+                return response?.data;
+            } catch (error: any) {
+                const errorMessage = error?.response?.data?.message || "Failed to fetch participants";
+                toast.error(errorMessage);
+                throw new Error(errorMessage);
+            }
+        },
+        retry: false,
+    });
+};
+
+export const useGetDashboardStats = (): UseQueryResult<any, unknown> => {
+    return useQuery({
+        queryKey: ["dashboard-stats"],
+        queryFn: async () => {
+            try {
+                const response = await api.get("auctions/stats/overview");
+                return response?.data;
+            } catch (error: any) {
+                const errorMessage = error?.response?.data?.message || "Failed to fetch dashboard stats";
+                toast.error(errorMessage);
+                throw new Error(errorMessage);
+            }
+        },
+        retry: false,
+    });
+};

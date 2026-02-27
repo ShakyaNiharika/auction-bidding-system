@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 
 const footerLinks = {
@@ -30,6 +33,13 @@ const footerLinks = {
 };
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    // Don't show footer on dashboard routes
+    if (pathname?.startsWith('/dashboard')) {
+        return null;
+    }
+
     return (
         <footer className="bg-gray-900 text-white">
             <div className="container mx-auto px-4 py-12">

@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Footer from '@/components/layout/Footer';
 import QueryProvider from '@/providers/QueryProvider';
 import './globals.css';
-import Header from '@/components/layout/Header';
 import { AuthProvider } from '@/context/AuthContext';
+import { SocketProvider } from '@/context/SocketContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,16 +20,14 @@ export default function RootLayout({
   modal: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="min-h-screen bg-gray-50">
         <QueryProvider>
           <AuthProvider>
-            <Header />
-            <main className="container mx-auto px-4 py-8">
+            <SocketProvider>
               {children}
-            </main>
-            {modal}
-            <Footer />
+              {modal}
+            </SocketProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
