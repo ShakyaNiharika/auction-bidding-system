@@ -24,7 +24,7 @@ export default function MyAuctionsPage() {
                     <p className="text-gray-500 mt-2">Manage and monitor your active and past auction listings.</p>
                 </div>
                 <Link href="/dashboard/auctions/create">
-                    <button className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-red-200 hover:bg-red-700 transition-all active:scale-95">
+                    <button className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
                         <Plus size={20} />
                         New Auction
                     </button>
@@ -44,7 +44,7 @@ export default function MyAuctionsPage() {
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
                 {isLoading ? (
                     <div className="p-20 flex flex-col items-center justify-center gap-4">
-                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
                         <p className="text-gray-500 font-bold animate-pulse">Loading your auctions...</p>
                     </div>
                 ) : auctions?.length === 0 ? (
@@ -55,7 +55,7 @@ export default function MyAuctionsPage() {
                         <h3 className="text-lg font-bold text-gray-900">No auctions found</h3>
                         <p className="text-gray-500 mt-1 max-w-xs mx-auto">You haven't created any auctions yet. Start by listing your first item!</p>
                         <Link href="/dashboard/auctions/create">
-                            <button className="mt-6 text-red-600 font-black hover:underline">List Item Now</button>
+                            <button className="mt-6 text-blue-600 font-black hover:underline">List Item Now</button>
                         </Link>
                     </div>
                 ) : (
@@ -81,7 +81,7 @@ export default function MyAuctionsPage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900 group-hover:text-red-600 transition-colors">{auction.title}</p>
+                                                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{auction.title}</p>
                                                 <p className="text-xs text-gray-500 font-medium">Qty: {auction.quantity} {auction.unit}</p>
                                             </div>
                                         </div>

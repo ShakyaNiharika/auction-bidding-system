@@ -153,7 +153,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                 <label className="text-sm font-bold text-gray-700">Harvest Date</label>
                                 <DatePicker
                                     selected={formData.harvest_date}
-                                    onChange={(date) => setFormData(prev => ({ ...prev, harvest_date: date }))}
+                                    onChange={(date: any) => setFormData(prev => ({ ...prev, harvest_date: date }))}
                                     dateFormat="MMMM d, yyyy"
                                     placeholderText="Select harvest date"
                                     required
@@ -165,7 +165,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                 <label className="text-sm font-bold text-gray-700">Start Date & Time</label>
                                 <DatePicker
                                     selected={formData.start_time}
-                                    onChange={(date) => setFormData(prev => ({ ...prev, start_time: date }))}
+                                    onChange={(date: any) => setFormData(prev => ({ ...prev, start_time: date }))}
                                     showTimeSelect
                                     timeIntervals={1}
                                     dateFormat="MMMM d, yyyy h:mm aa"
@@ -179,7 +179,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                 <label className="text-sm font-bold text-gray-700">End Date & Time</label>
                                 <DatePicker
                                     selected={formData.end_time}
-                                    onChange={(date) => setFormData(prev => ({ ...prev, end_time: date }))}
+                                    onChange={(date: any) => setFormData(prev => ({ ...prev, end_time: date }))}
                                     showTimeSelect
                                     timeIntervals={1}
                                     dateFormat="MMMM d, yyyy h:mm aa"
@@ -203,7 +203,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="px-10 py-3 rounded-xl font-black shadow-lg shadow-red-200"
+                        className="px-10 py-3 rounded-xl font-black shadow-lg shadow-blue-200"
                     >
                         {isPending ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Auction' : 'Launch Auction')}
                     </Button>

@@ -10,7 +10,7 @@ export default function AdminDashboard() {
 
     const statsConfig = [
         { label: 'Active Auctions', value: stats?.activeAuctions || '0', icon: Gavel, color: 'text-blue-600', bg: 'bg-blue-50' },
-        { label: 'Total Participants', value: stats?.totalParticipants || '0', icon: Users, color: 'text-red-600', bg: 'bg-red-50' },
+        { label: 'Total Participants', value: stats?.totalParticipants || '0', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
         { label: 'Total Listings', value: stats?.totalAuctions || '0', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     ];
 
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
                     <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                         <h2 className="text-lg font-bold text-gray-900">Active Auctions</h2>
                         <Link href="/dashboard/auctions/create">
-                            <button className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-700 transition-colors">
+                            <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-100">
                                 <Plus size={18} />
                                 Create New
                             </button>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
                         ].map((action, i) => (
                             <button key={i} className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/10 hover:bg-white/20 transition-colors group">
                                 <div className="flex items-center gap-3">
-                                    <action.icon size={20} className="text-red-500" />
+                                    <action.icon size={20} className="text-blue-400" />
                                     <span className="font-bold">{action.label}</span>
                                 </div>
                             </button>

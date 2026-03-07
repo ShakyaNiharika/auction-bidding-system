@@ -22,7 +22,7 @@ export default function SettingsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {sections.map((section, i) => (
-                    <button key={i} className="flex items-start gap-6 p-8 bg-white rounded-[32px] border border-gray-100 shadow-sm hover:shadow-xl hover:border-red-100 transition-all text-left">
+                    <button key={i} className="flex items-start gap-6 p-8 bg-white rounded-[32px] border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all text-left">
                         <div className="p-4 bg-gray-50 rounded-2xl text-gray-400">
                             <section.icon size={24} />
                         </div>
@@ -34,12 +34,12 @@ export default function SettingsPage() {
                 ))}
             </div>
 
-            <div className="bg-red-50 p-8 rounded-[32px] border border-red-100 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="bg-blue-50 p-8 rounded-[32px] border border-blue-100 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="space-y-1">
-                    <h3 className="text-lg font-bold text-red-900">Advanced Control</h3>
-                    <p className="text-sm text-red-600 font-medium">Reset your API keys or delete your seller account.</p>
+                    <h3 className="text-lg font-bold text-blue-900">Advanced Control</h3>
+                    <p className="text-sm text-blue-600 font-medium">Reset your API keys or delete your seller account.</p>
                 </div>
-                <button className="px-8 py-3 bg-white text-red-600 rounded-2xl text-sm font-black shadow-sm hover:bg-red-600 hover:text-white transition-all">
+                <button className="px-8 py-3 bg-white text-blue-600 rounded-2xl text-sm font-black shadow-sm hover:bg-blue-600 hover:text-white transition-all">
                     System Console
                 </button>
             </div>
