@@ -5,6 +5,8 @@ import { useCreateAuction } from '@/hooks/auction/useCreateAuction';
 import { useUpdateAuction } from '@/hooks/auction/useUpdateAuction';
 import { WeightUnit, Auction } from '@/types/auction';
 import Button from '@/components/ui/custom-button/Button';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 interface AuctionFormProps {
     initialData?: Partial<Auction>;
@@ -24,10 +26,10 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
         starting_price: initialData?.starting_price?.toString() || '',
         quantity: initialData?.quantity?.toString() || '',
         unit: initialData?.unit || WeightUnit.KG,
-        harvest_date: initialData?.harvest_date ? new Date(initialData.harvest_date).toISOString().split('T')[0] : '',
+        harvest_date: initialData?.harvest_date ? new Date(initialData.harvest_date) : null as Date | null,
         location: initialData?.location || '',
-        start_time: initialData?.start_time ? new Date(initialData.start_time).toISOString().slice(0, 16) : '',
-        end_time: initialData?.end_time ? new Date(initialData.end_time).toISOString().slice(0, 16) : '',
+        start_time: initialData?.start_time ? new Date(initialData.start_time) : null as Date | null,
+        end_time: initialData?.end_time ? new Date(initialData.end_time) : null as Date | null,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -38,12 +40,15 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Convert string values to numbers where needed
+        // Convert values for the API
         const payload = {
             ...formData,
             starting_price: Number(formData.starting_price),
             quantity: Number(formData.quantity),
-            current_price: Number(formData.starting_price), // Initial current price matches starting price
+            current_price: Number(formData.starting_price),
+            harvest_date: formData.harvest_date?.toISOString(),
+            start_time: formData.start_time?.toISOString(),
+            end_time: formData.end_time?.toISOString(),
         };
 
         if (isEditMode) {
@@ -146,35 +151,42 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Harvest Date</label>
-                                <input
+                                <DatePicker
+                                    selected={formData.harvest_date}
+                                    onChange={(date) => setFormData(prev => ({ ...prev, harvest_date: date }))}
+                                    dateFormat="MMMM d, yyyy"
+                                    placeholderText="Select harvest date"
                                     required
-                                    type="date"
-                                    name="harvest_date"
-                                    value={formData.harvest_date}
-                                    onChange={handleChange}
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className="w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400"
+                                    wrapperClassName="w-full"
                                 />
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Start Date & Time</label>
-                                <input
+                                <DatePicker
+                                    selected={formData.start_time}
+                                    onChange={(date) => setFormData(prev => ({ ...prev, start_time: date }))}
+                                    showTimeSelect
+                                    timeIntervals={1}
+                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                    placeholderText="Select start date & time"
                                     required
-                                    type="datetime-local"
-                                    name="start_time"
-                                    value={formData.start_time}
-                                    onChange={handleChange}
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className="w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400"
+                                    wrapperClassName="w-full"
                                 />
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">End Date & Time</label>
-                                <input
+                                <DatePicker
+                                    selected={formData.end_time}
+                                    onChange={(date) => setFormData(prev => ({ ...prev, end_time: date }))}
+                                    showTimeSelect
+                                    timeIntervals={1}
+                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                    placeholderText="Select end date & time"
                                     required
-                                    type="datetime-local"
-                                    name="end_time"
-                                    value={formData.end_time}
-                                    onChange={handleChange}
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className="w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400"
+                                    wrapperClassName="w-full"
                                 />
                             </div>
                         </div>

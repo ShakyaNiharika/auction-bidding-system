@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Button from '../ui/custom-button/Button';
 import { useAuth } from '@/context/AuthContext';
 import { User, LogOut, ChevronDown, UserCircle2, LayoutDashboard } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 
 const navigation = [
     { name: 'Home', href: '/' },
@@ -83,6 +84,7 @@ export default function Header() {
 
                         {/* Auth / Account Buttons */}
                         <div className="flex items-center space-x-2">
+                            {!isLoading && user && <NotificationBell />}
                             {!isLoading && user ? (
                                 <div className="relative" ref={accountMenuRef}>
                                     <button

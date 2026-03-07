@@ -8,14 +8,20 @@ import { useGetAuctionById } from '@/hooks/auction/useAuctionById';
 import { usePlaceBid } from '@/hooks/auction/usePlaceBid';
 import { useSocket } from '@/context/SocketContext';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/context/AuthContext';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function AuctionDetails({ id }: { id?: string }) {
     const { data: item, isLoading, error } = useGetAuctionById(id || '');
+    console.log(item, "itemss")
     const [activeImage, setActiveImage] = useState(0);
     const [bidAmount, setBidAmount] = useState<string>('');
     const { mutate: placeBid, isPending: isPlacingBid } = usePlaceBid();
     const { socket } = useSocket();
     const queryClient = useQueryClient();
+    const { user } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
         if (!socket || !id) return;
@@ -37,10 +43,27 @@ export default function AuctionDetails({ id }: { id?: string }) {
             });
         });
 
+        // Listen for auction end
+        socket.on('auctionEnded', (data: any) => {
+            console.log('Auction ended event received:', data);
+            toast.success("Auction has ended!");
+
+            // Update the React Query cache instantly to reflect completion and winner
+            queryClient.setQueryData(['auction', id], (oldData: any) => {
+                if (!oldData) return oldData;
+                return {
+                    ...oldData,
+                    status: 'completed',
+                    winner: data.winner,
+                };
+            });
+        });
+
         // Cleanup: leave the room when component unmounts
         return () => {
             socket.emit('leaveAuction', { auctionId: id });
             socket.off('newBid');
+            socket.off('auctionEnded');
         };
     }, [socket, id, queryClient]);
 
@@ -78,9 +101,14 @@ export default function AuctionDetails({ id }: { id?: string }) {
     const currentPrice = item.current_price || item.starting_price;
 
     const handlePlaceBid = () => {
+        if (!user) {
+            router.push('/auth/loginPage');
+            return;
+        }
         if (!id) return;
         const amount = parseFloat(bidAmount);
         if (isNaN(amount) || amount <= currentPrice) {
+            toast.error("Amount should be greater than the current amount");
             return;
         }
         placeBid({ id, amount }, {
@@ -173,8 +201,25 @@ export default function AuctionDetails({ id }: { id?: string }) {
                         </div>
                     </div>
 
-                    {/* Action Area */}
-                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
+                    {/* Winner Section for Completed Auctions */}
+                    {item.status === 'completed' && (
+                        <div className="bg-green-50 p-6 rounded-lg border border-green-200 space-y-3">
+                            <div className="flex items-center gap-2 text-green-700 font-bold text-xl">
+                                <span>🎉 Auction Ended</span>
+                            </div>
+                            {item.winner ? (
+                                <div className="space-y-1">
+                                    <p className="text-sm text-green-600">Winner: <span className="font-bold text-green-800">{item.winner.username || (item.winner.first_name + ' ' + item.winner.last_name)}</span></p>
+                                    <p className="text-sm text-green-600">Final Price: <span className="font-bold text-green-800">Rs. {currentPrice.toLocaleString()}</span></p>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-green-600 italic">This auction ended without any bids.</p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Action Area (Disabled if completed) */}
+                    <div className={`${item.status === 'completed' ? 'opacity-50 pointer-events-none grayscale' : ''} bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4`}>
                         <div className="flex items-center gap-4">
                             <label className="text-sm font-medium text-gray-700">Quantity ({item.unit}) :</label>
                             <span className="font-bold text-gray-700">{item.quantity}</span>
