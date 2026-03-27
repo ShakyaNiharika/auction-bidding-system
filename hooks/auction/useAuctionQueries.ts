@@ -7,21 +7,21 @@ import { Auction } from "@/types/auction";
 export const useGetAuctions = (
     limit?: number,
     page?: number,
-    keyword?: string
+    keyword?: string,
+    variety?: string,
+    status?: string
 ): UseQueryResult<any, unknown> => {
     return useQuery({
-        queryKey: ["auctions", limit, page, keyword],
+        queryKey: ["auctions", limit, page, keyword, variety, status],
         queryFn: async () => {
             try {
-                const params: {
-                    page?: string;
-                    limit?: string;
-                    keyword?: string;
-                } = {};
+                const params: any = {};
 
                 if (page) params.page = page.toString();
                 if (limit) params.limit = limit.toString();
                 if (keyword) params.keyword = keyword;
+                if (variety) params.variety = variety;
+                if (status) params.status = status;
 
                 const response = await api.get("auctions", { params });
 

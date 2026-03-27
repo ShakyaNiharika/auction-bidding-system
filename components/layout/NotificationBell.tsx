@@ -68,7 +68,7 @@ export default function NotificationBell() {
             case 'OUTBID':
                 return <AlertTriangle className="text-orange-500" size={18} />;
             default:
-                return <Info className="text-blue-500" size={18} />;
+                return <Info className="text-[#1b4332]" size={18} />;
         }
     };
 

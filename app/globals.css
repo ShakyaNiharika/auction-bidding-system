@@ -4,8 +4,11 @@
   --background: #ffffff;
   --foreground: #041702;
 
-  /* Primary Brand Color - Royal Blue */
-  --primary: #2563eb;
+  /* Brand Colors - Sugarcane Green & Orange */
+  --primary: #1b4332;
+  /* Deep Sugarcane Green */
+  --primary-orange: #f97316;
+  /* Vibrant Orange */
   --primary-foreground: #ffffff;
 
   /* Secondary - Slate */
@@ -22,12 +25,12 @@
 
   /* Accent - Light Blue */
   --accent: #eff6ff;
-  --accent-foreground: #1e40af;
+  /* --accent-foreground: #1e40af; */
 
   /* UI Elements */
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #2563eb;
+  /* --ring: #2563eb; */
 
   --radius: 0.5rem;
 }
@@ -37,6 +40,7 @@
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
+  --color-primary-orange: var(--primary-orange);
   --color-primary-foreground: var(--primary-foreground);
 
   --color-secondary: var(--secondary);
@@ -69,7 +73,7 @@
     --background: #e3e6ec;
     --foreground: #f8fafc;
 
-    --primary: #3b82f6;
+    /* --primary: #3b82f6; */
     --primary-foreground: #ffffff;
 
     --secondary: #1e293b;

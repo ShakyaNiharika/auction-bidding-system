@@ -32,6 +32,7 @@ export interface Auction {
     start_time: string;
     end_time: string;
     status: AuctionStatus;
+    variety?: string;
     winner?: AuctionSeller;
     winning_bid?: string;
     createdAt: string;

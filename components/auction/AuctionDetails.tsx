@@ -166,7 +166,7 @@ export default function AuctionDetails({ id }: { id?: string }) {
                     <div className="flex items-center gap-4 mt-6">
                         <span className="text-sm font-medium text-gray-700">Share:</span>
                         <div className="flex gap-2">
-                            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"><Facebook size={16} /></button>
+                            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-[#1b4332] text-white hover:bg-[#153427]"><Facebook size={16} /></button>
                             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-sky-500 text-white hover:bg-sky-600"><Twitter size={16} /></button>
                             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700"><Mail size={16} /></button>
                             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-600 text-white hover:bg-gray-700"><Plus size={16} /></button>
@@ -183,7 +183,7 @@ export default function AuctionDetails({ id }: { id?: string }) {
                             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
                                 {item.title}
                             </h1>
-                            <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${item.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                            <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${item.status === 'active' ? 'bg-[#1b4332]/10 text-[var(--primary)]' : 'bg-gray-100 text-gray-700'}`}>
                                 {item.status}
                             </span>
                         </div>
@@ -203,17 +203,17 @@ export default function AuctionDetails({ id }: { id?: string }) {
 
                     {/* Winner Section for Completed Auctions */}
                     {item.status === 'completed' && (
-                        <div className="bg-green-50 p-6 rounded-lg border border-green-200 space-y-3">
-                            <div className="flex items-center gap-2 text-green-700 font-bold text-xl">
+                        <div className="bg-[#1b4332]/5 p-6 rounded-lg border border-[#1b4332]/20 space-y-3">
+                            <div className="flex items-center gap-2 text-[var(--primary)] font-bold text-xl">
                                 <span>🎉 Auction Ended</span>
                             </div>
                             {item.winner ? (
                                 <div className="space-y-1">
-                                    <p className="text-sm text-green-600">Winner: <span className="font-bold text-green-800">{item.winner.username || (item.winner.first_name + ' ' + item.winner.last_name)}</span></p>
-                                    <p className="text-sm text-green-600">Final Price: <span className="font-bold text-green-800">Rs. {currentPrice.toLocaleString()}</span></p>
+                                    <p className="text-sm text-[var(--primary)]/70">Winner: <span className="font-bold text-[var(--primary)]">{item.winner.username || (item.winner.first_name + ' ' + item.winner.last_name)}</span></p>
+                                    <p className="text-sm text-[var(--primary)]/70">Final Price: <span className="font-bold text-[var(--primary)]">Rs. {currentPrice.toLocaleString()}</span></p>
                                 </div>
                             ) : (
-                                <p className="text-sm text-green-600 italic">This auction ended without any bids.</p>
+                                <p className="text-sm text-[var(--primary)]/70 italic">This auction ended without any bids.</p>
                             )}
                         </div>
                     )}
@@ -239,7 +239,7 @@ export default function AuctionDetails({ id }: { id?: string }) {
                         <Button
                             onClick={handlePlaceBid}
                             // disabled={isPlacingBid || !bidAmount || parseFloat(bidAmount) <= currentPrice}
-                            className="w-full h-12 text-lg font-bold bg-[var(--primary)] hover:bg-blue-700 text-white rounded shadow-lg shadow-blue-200"
+                            className="w-full h-12 text-lg font-bold bg-[var(--primary)] hover:bg-[#153427] text-white rounded shadow-lg shadow-[#1b4332]/20"
                         >
                             {isPlacingBid ? 'Placing Bid...' : 'Place Bid'}
                         </Button>

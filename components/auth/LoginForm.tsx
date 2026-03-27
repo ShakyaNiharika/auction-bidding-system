@@ -59,7 +59,7 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-[850px] min-h-[500px] overflow-hidden relative flex flex-col md:flex-row mx-auto">
+        <div className="bg-white shadow-2xl w-full max-w-[850px] min-h-[500px] overflow-hidden relative flex flex-col md:flex-row mx-auto">
             {/* Left Side - Form (Pinterest Style: Form is prominent) */}
             <div className="flex-1 p-8 md:p-12 flex flex-col justify-center text-center">
 

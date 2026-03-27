@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'outline';
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
     isLoading?: boolean;
 }
@@ -20,9 +20,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     'disabled:pointer-events-none disabled:opacity-50',
 
                     // Variants
-                    variant === 'primary' && 'bg-blue-600 text-white hover:bg-blue-700',
+                    variant === 'primary' && 'bg-[var(--primary)] text-white hover:opacity-90',
                     variant === 'secondary' && 'bg-gray-200 text-gray-900 hover:bg-gray-300',
                     variant === 'outline' && 'border border-gray-300 hover:bg-gray-50',
+                    variant === 'ghost' && 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
 
                     // Sizes
                     size === 'sm' && 'px-3 py-1.5 text-sm',

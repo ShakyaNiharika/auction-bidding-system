@@ -29,8 +29,8 @@ export default function AdminSidebar() {
             {/* Logo Area */}
             <div className="p-8">
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black group-hover:rotate-12 transition-transform shadow-lg shadow-blue-200">B</div>
-                    <span className="text-xl font-black text-gray-900 tracking-tighter italic">BIDS <span className="text-blue-600">AWSOME</span></span>
+                    <div className="w-8 h-8 bg-[#1b4332] rounded-lg flex items-center justify-center text-white font-black group-hover:rotate-12 transition-transform shadow-lg shadow-[#1b4332]/20">B</div>
+                    <span className="text-xl font-black text-gray-900 tracking-tighter italic">BIDS <span className="text-[#1b4332]">AWSOME</span></span>
                 </Link>
             </div>
 
@@ -46,12 +46,12 @@ export default function AdminSidebar() {
                             className={`
                                 flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-200 group
                                 ${isActive
-                                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                                    ? 'bg-[#1b4332]/5 text-[#1b4332] shadow-sm'
                                     : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}
                             `}
                         >
                             <div className="flex items-center gap-3">
-                                <item.icon size={20} className={isActive ? 'text-blue-600' : 'group-hover:text-blue-600 transition-colors'} />
+                                <item.icon size={20} className={isActive ? 'text-[#1b4332]' : 'group-hover:text-[#1b4332] transition-colors'} />
                                 <span className="font-bold text-sm tracking-tight">{item.name}</span>
                             </div>
                             {isActive && <ChevronRight size={16} />}

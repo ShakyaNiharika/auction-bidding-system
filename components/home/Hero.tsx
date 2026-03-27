@@ -2,75 +2,63 @@
 
 import Link from 'next/link';
 import Button from '@/components/ui/custom-button/Button';
-import { Play, Search, ChevronDown } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function Hero() {
     return (
-        <section className="relative w-full h-[600px] min-h-[500px] flex items-center overflow-hidden">
-            {/* Background Image with Brand Color Overlay */}
+        <section className="relative w-full h-[600px] md:h-[700px] flex items-center overflow-hidden">
+            {/* Background Image with Overlay */}
             <div className="absolute inset-0 z-0">
                 <div
-                    className="w-full h-full bg-cover bg-center bg-no-repeat transform scale-105 animate-in fade-in zoom-in duration-[2s]"
+                    className="w-full h-full bg-cover bg-center bg-no-repeat transform scale-100 transition-transform duration-[10s] hover:scale-105"
                     style={{
-                        backgroundImage: 'url("https://images.unsplash.com/photo-1605000797499-95a05a41a4aa?q=80&w=2071&auto=format&fit=crop")',
+                        backgroundImage: 'url("/hero-sugarcane.png")',
                     }}
                 ></div>
-                {/* Overlay - Using Brand Colors (Darkish Blue/Slate mix to match reference but keep brand identity) */}
-                <div className="absolute inset-0 bg-slate-900/80 mix-blend-multiply"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary)]/40 to-black/60"></div>
+                {/* Dark natural overlay */}
+                <div className="absolute inset-0 bg-black/45"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             </div>
 
-            {/* Content */}
-            <div className="relative z-10 container mx-auto px-4 flex flex-col justify-center h-full pt-20">
-                <div className="max-w-4xl space-y-10 animate-in slide-in-from-bottom-10 fade-in duration-1000">
+            {/* Content Container */}
+            <div className="relative z-10 w-full flex flex-col items-center justify-center text-center">
+                <div className="max-w-4xl space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000">
 
-                    {/* Headline */}
-                    <div>
-                        <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight mb-2">
-                            Join Our Next Auction! Find <br />
-                            Your Sugarcane Deal
+                    {/* Main Headings */}
+                    <div className="space-y-4">
+                        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight drop-shadow-xl tracking-tight">
+                            खरिद बिक्रीको नयाँ आयाम
                         </h1>
-                        <p className="text-gray-300 text-lg md:text-xl max-w-2xl mt-4 opacity-90">
-                            Directly connect with Nepal's farmers and mills. Fair prices, authentic produce.
+                        <p className="text-lg md:text-2xl font-medium text-white/95 max-w-2xl mx-auto drop-shadow-lg">
+                            Fair Price Auctions for Nepal's Sugarcane Farmers
                         </p>
                     </div>
 
-                    {/* Search Bar Container */}
-                    <div className="bg-white p-2 rounded lg:rounded-md shadow-2xl max-w-2xl flex flex-col md:flex-row items-center gap-2">
-
-                        {/* Category Dropdown */}
-                        <div className="relative w-full md:w-48 border-b md:border-b-0 md:border-r border-gray-200">
-                            <button className="w-full h-12 px-4 flex items-center justify-between text-gray-700 hover:text-[var(--primary)] transition-colors font-medium text-sm">
-                                <span>All Categories</span>
-                                <ChevronDown size={16} />
-                            </button>
+                    {/* Stats Row */}
+                    <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-white font-bold text-sm md:text-base">
+                        <div className="flex items-center gap-2 drop-shadow-md">
+                            <CheckCircle2 className="text-orange-400" size={22} strokeWidth={3} />
+                            <span>500+ Farmers Registered</span>
                         </div>
-
-                        {/* Input */}
-                        <div className="flex-1 w-full relative">
-                            <input
-                                type="text"
-                                placeholder="I'm Looking for..."
-                                className="w-full h-12 px-4 text-gray-800 placeholder:text-gray-400 focus:outline-none text-sm"
-                            />
+                        <div className="flex items-center gap-2 drop-shadow-md">
+                            <CheckCircle2 className="text-orange-400" size={22} strokeWidth={3} />
+                            <span>25+ Mills Active</span>
                         </div>
-
-                        {/* Search Button */}
-                        <Button className="w-full md:w-auto px-8 h-12 bg-gray-900 hover:bg-black text-white rounded font-bold uppercase tracking-wider text-xs shadow-none">
-                            Search
-                        </Button>
                     </div>
 
-                    {/* Video CTA */}
-                    {/* <div className="flex items-center gap-4 pt-4 group cursor-pointer">
-                        <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <Play size={20} className="text-white ml-1 fill-white" />
-                        </div>
-                        <div className="text-white">
-                            <p className="text-[10px] font-bold tracking-widest uppercase opacity-70 mb-0.5">We are running our summer discount</p>
-                            <p className="text-xs font-bold border-b border-white/40 pb-0.5 inline-block group-hover:border-white transition-colors">WATCH VIDEO TO LEARN MORE</p>
-                        </div>
-                    </div> */}
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-5 pt-6">
+                        <Link href="/auctions">
+                            <Button className="w-64 h-14 bg-[var(--primary-orange)] hover:bg-orange-600 text-white border-none rounded-lg text-lg font-bold shadow-2xl shadow-orange-900/40 transition-all hover:scale-105 active:scale-95">
+                                Start Bidding Now
+                            </Button>
+                        </Link>
+                        <Link href="/auth/registration">
+                            <Button variant="outline" className="w-64 h-14 bg-white hover:bg-gray-50 text-gray-900 border-none rounded-lg text-lg font-bold shadow-2xl transition-all hover:scale-105 active:scale-95">
+                                List Your Crop
+                            </Button>
+                        </Link>
+                    </div>
 
                 </div>
             </div>

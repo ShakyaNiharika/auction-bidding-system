@@ -9,9 +9,9 @@ export default function AdminDashboard() {
     const { data: stats, isLoading } = useGetDashboardStats();
 
     const statsConfig = [
-        { label: 'Active Auctions', value: stats?.activeAuctions || '0', icon: Gavel, color: 'text-blue-600', bg: 'bg-blue-50' },
-        { label: 'Total Participants', value: stats?.totalParticipants || '0', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-        { label: 'Total Listings', value: stats?.totalAuctions || '0', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { label: 'Active Auctions', value: stats?.activeAuctions || '0', icon: Gavel, color: 'text-[#1b4332]', bg: 'bg-[#1b4332]/5' },
+        { label: 'Total Participants', value: stats?.totalParticipants || '0', icon: Users, color: 'text-[#1b4332]', bg: 'bg-[#1b4332]/5' },
+        { label: 'Total Listings', value: stats?.totalAuctions || '0', icon: TrendingUp, color: 'text-[#1b4332]', bg: 'bg-[#1b4332]/5' },
     ];
 
     return (
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
                     <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                         <h2 className="text-lg font-bold text-gray-900">Active Auctions</h2>
                         <Link href="/dashboard/auctions/create">
-                            <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-100">
+                            <button className="flex items-center gap-2 bg-[#1b4332] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#153427] transition-colors shadow-lg shadow-[#1b4332]/10">
                                 <Plus size={18} />
                                 Create New
                             </button>
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
                                                 Rs. {auction.current_price?.toLocaleString() || auction.starting_price.toLocaleString()}
                                             </td>
                                             <td className="px-8 py-4">
-                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${auction.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${auction.status === 'active' ? 'bg-[#1b4332]/10 text-[#1b4332]' : 'bg-gray-100 text-gray-500'}`}>
                                                     {auction.status}
                                                 </span>
                                             </td>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
                         ].map((action, i) => (
                             <button key={i} className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/10 hover:bg-white/20 transition-colors group">
                                 <div className="flex items-center gap-3">
-                                    <action.icon size={20} className="text-blue-400" />
+                                    <action.icon size={20} className="text-[#1b4332]" />
                                     <span className="font-bold">{action.label}</span>
                                 </div>
                             </button>

@@ -28,6 +28,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
         unit: initialData?.unit || WeightUnit.KG,
         harvest_date: initialData?.harvest_date ? new Date(initialData.harvest_date) : null as Date | null,
         location: initialData?.location || '',
+        variety: initialData?.variety || '',
         start_time: initialData?.start_time ? new Date(initialData.start_time) : null as Date | null,
         end_time: initialData?.end_time ? new Date(initialData.end_time) : null as Date | null,
     });
@@ -43,6 +44,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
         // Convert values for the API
         const payload = {
             ...formData,
+            variety: formData.variety || undefined,
             starting_price: Number(formData.starting_price),
             quantity: Number(formData.quantity),
             current_price: Number(formData.starting_price),
@@ -85,8 +87,22 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                     value={formData.location}
                                     onChange={handleChange}
                                     placeholder="e.g. Biratnagar, Morang"
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className={`w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                 />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-bold text-gray-700">Sugarcane Variety</label>
+                                <select
+                                    name="variety"
+                                    value={formData.variety}
+                                    onChange={handleChange}
+                                    className={`w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                >
+                                    <option value="">Select Variety (Optional)</option>
+                                    <option value="CO 0238">CO 0238</option>
+                                    <option value="CO 1148">CO 1148</option>
+                                    <option value="Jitpur-5">Jitpur-5</option>
+                                </select>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1.5">
@@ -203,7 +219,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="px-10 py-3 rounded-xl font-black shadow-lg shadow-blue-200"
+                        className="px-10 py-3 rounded-xl font-black shadow-lg shadow-[#1b4332]/20"
                     >
                         {isPending ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Auction' : 'Launch Auction')}
                     </Button>

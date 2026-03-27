@@ -13,7 +13,7 @@ export default function EditAuctionPage() {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center p-20 gap-4">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1b4332]"></div>
                 <p className="text-gray-500 font-bold animate-pulse">Fetching auction data...</p>
             </div>
         );
@@ -22,7 +22,7 @@ export default function EditAuctionPage() {
     if (!auction) {
         return (
             <div className="p-20 text-center">
-                <p className="text-blue-500 font-bold text-xl">Auction not found</p>
+                <p className="text-[#1b4332] font-bold text-xl">Auction not found</p>
             </div>
         );
     }

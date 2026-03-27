@@ -73,7 +73,7 @@ export default function RegisterForm() {
         `w-full px-4 py-3 rounded-2xl border ${errors[field] ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`;
 
     return (
-        <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-[850px] min-h-[500px] overflow-hidden relative flex flex-col md:flex-row mx-auto">
+        <div className="bg-white shadow-2xl w-full max-w-[850px] min-h-[500px] overflow-hidden relative flex flex-col md:flex-row mx-auto">
             {/* Left Side - Form (Pinterest Style) */}
             <div className="flex-1 p-8 md:p-12 flex flex-col justify-center text-center">
 

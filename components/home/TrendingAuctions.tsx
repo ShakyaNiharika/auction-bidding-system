@@ -54,7 +54,7 @@ export default function TrendingAuctions() {
                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 {/* Status Chip */}
-                                <div className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wide rounded-sm shadow-sm">
+                                <div className="absolute top-3 left-3 bg-[var(--primary)] text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wide rounded-sm shadow-sm">
                                     {item?.status}
                                 </div>
                             </div>
@@ -82,7 +82,7 @@ export default function TrendingAuctions() {
                                         </p>
                                     </div>
                                     <Link href={`/auctions/${item?._id}`}>
-                                        <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 px-6 rounded-lg font-semibold h-10">
+                                        <Button className="bg-[var(--primary)] hover:bg-[#153427] text-white shadow-md shadow-[#1b4332]/20 px-6 rounded-lg font-semibold h-10">
                                             View Details
                                         </Button>
                                     </Link>

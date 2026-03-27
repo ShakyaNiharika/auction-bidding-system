@@ -10,8 +10,8 @@ import NotificationBell from './NotificationBell';
 
 const navigation = [
     { name: 'Home', href: '/' },
+    { name: 'Auctions', href: '/auctions' },
     { name: 'How It Works', href: '/how-it-works' },
-    // { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
 ];
 
@@ -44,14 +44,17 @@ export default function Header() {
     }
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+        <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
             <div className="container mx-auto px-4">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2">
-                            <span className="text-xl font-bold text-gray-900 hidden sm:inline-block">
-                                BIDS AWSOME
+                            <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center">
+                                <span className="text-white font-bold">S</span>
+                            </div>
+                            <span className="text-xl font-bold text-[var(--primary)] hidden sm:inline-block">
+                                Sugarcane Auction
                             </span>
                         </Link>
                     </div>
@@ -148,9 +151,9 @@ export default function Header() {
                                         scroll={false}
                                     >
                                         <Button
-                                            variant="primary"
+                                            variant="ghost"
                                             size="sm"
-                                            className="font-bold rounded-full px-5"
+                                            className="font-medium text-gray-600 hover:text-[var(--primary)]"
                                         >
                                             <span>Sign In</span>
                                         </Button>
@@ -159,7 +162,6 @@ export default function Header() {
                                     <Link
                                         href="/auth/registration"
                                         scroll={false}
-                                        className="hidden sm:block"
                                     >
                                         <Button
                                             variant={isRegistrationPage ? "primary" : "outline"}

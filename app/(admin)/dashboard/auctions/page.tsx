@@ -24,7 +24,7 @@ export default function MyAuctionsPage() {
                     <p className="text-gray-500 mt-2">Manage and monitor your active and past auction listings.</p>
                 </div>
                 <Link href="/dashboard/auctions/create">
-                    <button className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
+                    <button className="flex items-center gap-2 bg-[#1b4332] text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-[#1b4332]/10 hover:bg-[#153427] transition-all active:scale-95">
                         <Plus size={20} />
                         New Auction
                     </button>
@@ -44,7 +44,7 @@ export default function MyAuctionsPage() {
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
                 {isLoading ? (
                     <div className="p-20 flex flex-col items-center justify-center gap-4">
-                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1b4332]"></div>
                         <p className="text-gray-500 font-bold animate-pulse">Loading your auctions...</p>
                     </div>
                 ) : auctions?.length === 0 ? (
@@ -55,7 +55,7 @@ export default function MyAuctionsPage() {
                         <h3 className="text-lg font-bold text-gray-900">No auctions found</h3>
                         <p className="text-gray-500 mt-1 max-w-xs mx-auto">You haven't created any auctions yet. Start by listing your first item!</p>
                         <Link href="/dashboard/auctions/create">
-                            <button className="mt-6 text-blue-600 font-black hover:underline">List Item Now</button>
+                            <button className="mt-6 text-[#1b4332] font-black hover:underline">List Item Now</button>
                         </Link>
                     </div>
                 ) : (
@@ -81,7 +81,7 @@ export default function MyAuctionsPage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{auction.title}</p>
+                                                <p className="font-bold text-gray-900 group-hover:text-[#1b4332] transition-colors">{auction.title}</p>
                                                 <p className="text-xs text-gray-500 font-medium">Qty: {auction.quantity} {auction.unit}</p>
                                             </div>
                                         </div>
@@ -93,7 +93,7 @@ export default function MyAuctionsPage() {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
-                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${auction.status === 'active' ? 'bg-green-100 text-green-700' :
+                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${auction.status === 'active' ? 'bg-[#1b4332]/10 text-[#1b4332]' :
                                             auction.status === 'draft' ? 'bg-gray-100 text-gray-600' : 'bg-red-100 text-red-700'
                                             }`}>
                                             {auction.status}
@@ -108,7 +108,7 @@ export default function MyAuctionsPage() {
                                     </td>
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button title="View Live" className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                                            <button title="View Live" className="p-2 text-gray-400 hover:text-[#1b4332] transition-colors">
                                                 <ExternalLink size={18} />
                                             </button>
                                             <Link href={`/dashboard/auctions/edit/${auction._id}`}>
