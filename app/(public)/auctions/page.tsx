@@ -66,11 +66,11 @@ function AuctionsContent() {
                         >
                             {/* Image Area */}
                             <div className="relative h-48 w-full overflow-hidden bg-gray-100">
-                                <Image
-                                    src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXC5UcPRZHfl0onjgLI7v18HGEV7If7rGZ3g&s"}
-                                    alt={item?.title}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={item?.images?.[0] ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${item.images[0]}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXC5UcPRZHfl0onjgLI7v18HGEV7If7rGZ3g&s"}
+                                    alt={item?.title || "Auction Item"}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 {/* Status Chip */}
                                 <div className={`absolute top-3 left-3 ${getStatusColor(item.status)} text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wide rounded-sm shadow-sm`}>

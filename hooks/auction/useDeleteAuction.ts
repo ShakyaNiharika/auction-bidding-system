@@ -13,6 +13,7 @@ export const useDeleteAuction = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["auctions"] });
+            queryClient.invalidateQueries({ queryKey: ["my-auctions"] });
             toast.success("Auction deleted successfully!");
         },
         onError: (error: any) => {

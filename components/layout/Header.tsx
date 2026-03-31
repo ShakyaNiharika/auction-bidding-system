@@ -49,11 +49,15 @@ export default function Header() {
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold">S</span>
+                        <Link href="/" className="flex items-center space-x-3 group">
+                            <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
+                                <img 
+                                    src="/logo.png" 
+                                    alt="Sugarcane Auction Logo" 
+                                    className="w-full h-full object-contain"
+                                />
                             </div>
-                            <span className="text-xl font-bold text-[var(--primary)] hidden sm:inline-block">
+                            <span className="text-xl font-black text-[#1b4332] hidden sm:inline-block tracking-tight">
                                 Sugarcane Auction
                             </span>
                         </Link>

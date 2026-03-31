@@ -9,13 +9,15 @@ import {
     Settings,
     ChevronRight,
     LogOut,
-    Home
+    Home,
+    Sprout
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 const menuItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'My Auctions', href: '/dashboard/auctions', icon: Gavel },
+    { name: 'Varieties', href: '/dashboard/varieties', icon: Sprout },
     { name: 'Participants', href: '/dashboard/users', icon: Users },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
@@ -28,9 +30,18 @@ export default function AdminSidebar() {
         <aside className="w-72 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
             {/* Logo Area */}
             <div className="p-8">
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-8 h-8 bg-[#1b4332] rounded-lg flex items-center justify-center text-white font-black group-hover:rotate-12 transition-transform shadow-lg shadow-[#1b4332]/20">B</div>
-                    <span className="text-xl font-black text-gray-900 tracking-tighter italic">BIDS <span className="text-[#1b4332]">AWSOME</span></span>
+                <Link href="/" className="flex items-center gap-3 group">
+                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-gray-100 group-hover:scale-110 transition-transform border border-gray-100">
+                        <img 
+                            src="/logo.png" 
+                            alt="Logo" 
+                            className="w-full h-full object-contain" 
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-base font-black text-gray-900 leading-none tracking-tight">Sugarcane</span>
+                        <span className="text-sm font-bold text-[#1b4332] leading-none mt-0.5 uppercase tracking-widest">Auction</span>
+                    </div>
                 </Link>
             </div>
 

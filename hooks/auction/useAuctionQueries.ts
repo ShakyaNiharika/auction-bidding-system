@@ -70,6 +70,23 @@ export const useGetMyAuctions = (): UseQueryResult<Auction[], unknown> => {
     });
 };
 
+export const useGetMyBids = (): UseQueryResult<any[], unknown> => {
+    return useQuery({
+        queryKey: ["my-bids"],
+        queryFn: async () => {
+            try {
+                const response = await api.get("auctions/buyer/me");
+                return response?.data;
+            } catch (error: any) {
+                const errorMessage = error?.response?.data?.message || "Failed to fetch your bids";
+                toast.error(errorMessage);
+                throw new Error(errorMessage);
+            }
+        },
+        retry: false,
+    });
+};
+
 export const useGetParticipants = (): UseQueryResult<any[], unknown> => {
     return useQuery({
         queryKey: ["participants"],

@@ -3,16 +3,31 @@
 import { useGetMyAuctions } from '@/hooks/auction/useAuctionQueries';
 import { useDeleteAuction } from '@/hooks/auction/useDeleteAuction';
 import { Auction } from '@/types/auction';
-import { Gavel, Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
+import { Gavel, Plus, Edit2, Trash2, ExternalLink, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 export default function MyAuctionsPage() {
     const { data: auctions, isLoading } = useGetMyAuctions();
-    const { mutate: deleteAuction } = useDeleteAuction();
+    const { mutate: deleteAuction, isPending: isDeleting } = useDeleteAuction();
+    
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [selectedAuction, setSelectedAuction] = useState<{id: string, title: string} | null>(null);
 
     const handleConfirmDelete = (id: string, title: string) => {
-        if (window.confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
-            deleteAuction(id);
+        setSelectedAuction({ id, title });
+        setIsConfirmOpen(true);
+    };
+
+    const performDelete = () => {
+        if (selectedAuction) {
+            deleteAuction(selectedAuction.id, {
+                onSuccess: () => {
+                    setIsConfirmOpen(false);
+                    setSelectedAuction(null);
+                }
+            });
         }
     };
 
@@ -74,11 +89,18 @@ export default function MyAuctionsPage() {
                                 <tr key={auction._id} className="hover:bg-gray-50/50 transition-colors group">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-gray-100 rounded-xl overflow-hidden shrink-0">
-                                                {/* Placeholder for real image */}
-                                                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                                    <Gavel size={20} className="text-gray-400" />
-                                                </div>
+                                            <div className="relative w-12 h-12 bg-gray-100 rounded-xl overflow-hidden shrink-0">
+                                                {auction.images && auction.images.length > 0 ? (
+                                                    <img 
+                                                        src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${auction.images[0]}`} 
+                                                        alt={auction.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                                        <Gavel size={20} className="text-gray-400" />
+                                                    </div>
+                                                )}
                                             </div>
                                             <div>
                                                 <p className="font-bold text-gray-900 group-hover:text-[#1b4332] transition-colors">{auction.title}</p>
@@ -131,6 +153,17 @@ export default function MyAuctionsPage() {
                     </table>
                 )}
             </div>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={performDelete}
+                title="Delete Auction"
+                message={`Are you sure you want to delete "${selectedAuction?.title}"? This action is permanent and cannot be undone.`}
+                confirmText="Delete"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 }

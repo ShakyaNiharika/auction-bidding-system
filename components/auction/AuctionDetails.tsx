@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useInitiatePayment } from '@/hooks/payment/useInitiatePayment';
 
 export default function AuctionDetails({ id }: { id?: string }) {
     const { data: item, isLoading, error } = useGetAuctionById(id || '');
@@ -22,6 +23,7 @@ export default function AuctionDetails({ id }: { id?: string }) {
     const queryClient = useQueryClient();
     const { user } = useAuth();
     const router = useRouter();
+    const { mutate: initiatePayment, isPending: isInitiatingPayment } = useInitiatePayment();
 
     useEffect(() => {
         if (!socket || !id) return;
@@ -92,11 +94,9 @@ export default function AuctionDetails({ id }: { id?: string }) {
         );
     }
 
-    const images = [
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXC5UcPRZHfl0onjgLI7v18HGEV7If7rGZ3g&s", // Placeholder
-        "https://images.unsplash.com/photo-1605000797499-95a05a41a4aa?q=80&w=2071&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1555447405-f588c9569080?q=80&w=2070&auto=format&fit=crop",
-    ];
+    const images = item.images && item.images.length > 0 
+        ? item.images.map(img => `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${img}`) 
+        : ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXC5UcPRZHfl0onjgLI7v18HGEV7If7rGZ3g&s"];
 
     const currentPrice = item.current_price || item.starting_price;
 
@@ -132,11 +132,11 @@ export default function AuctionDetails({ id }: { id?: string }) {
                 <div className="w-full lg:w-1/2">
                     {/* Main Image */}
                     <div className="relative w-full h-[400px] md:h-[500px] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 mb-4">
-                        <Image
-                            src={images[activeImage]}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src={images[activeImage] || images[0]}
                             alt={item.title}
-                            fill
-                            className="object-cover"
+                            className="w-full h-full object-cover"
                         />
                         {/* Navigation Arrows */}
                         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4">
@@ -157,7 +157,8 @@ export default function AuctionDetails({ id }: { id?: string }) {
                                 onClick={() => setActiveImage(idx)}
                                 className={`relative w-24 h-24 rounded border cursor-pointer ${activeImage === idx ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20' : 'border-gray-200 hover:border-gray-300'}`}
                             >
-                                <Image src={img} alt="Thumbnail" fill className="object-cover rounded-sm" />
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={img} alt="Thumbnail" className="w-full h-full object-cover rounded-sm" />
                             </div>
                         ))}
                     </div>
@@ -204,13 +205,37 @@ export default function AuctionDetails({ id }: { id?: string }) {
                     {/* Winner Section for Completed Auctions */}
                     {item.status === 'completed' && (
                         <div className="bg-[#1b4332]/5 p-6 rounded-lg border border-[#1b4332]/20 space-y-3">
-                            <div className="flex items-center gap-2 text-[var(--primary)] font-bold text-xl">
-                                <span>🎉 Auction Ended</span>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-[var(--primary)] font-bold text-xl">
+                                    <span>🎉 Auction Ended</span>
+                                </div>
+                                {item.payment_status === 'completed' && (
+                                    <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full uppercase">
+                                        Payment Successful
+                                    </span>
+                                )}
                             </div>
+                            
                             {item.winner ? (
-                                <div className="space-y-1">
-                                    <p className="text-sm text-[var(--primary)]/70">Winner: <span className="font-bold text-[var(--primary)]">{item.winner.username || (item.winner.first_name + ' ' + item.winner.last_name)}</span></p>
-                                    <p className="text-sm text-[var(--primary)]/70">Final Price: <span className="font-bold text-[var(--primary)]">Rs. {currentPrice.toLocaleString()}</span></p>
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                        <p className="text-sm text-[var(--primary)]/70">Winner: <span className="font-bold text-[var(--primary)]">{item.winner.username || (item.winner.first_name + ' ' + item.winner.last_name)}</span></p>
+                                        <p className="text-sm text-[var(--primary)]/70">Final Price: <span className="font-bold text-[var(--primary)]">Rs. {currentPrice.toLocaleString()}</span></p>
+                                    </div>
+
+                                    {/* Action for the Winner to Pay */}
+                                    {user && user.id === item.winner._id && item.payment_status !== 'completed' && (
+                                        <div className="pt-2 border-t border-[#1b4332]/10 mt-2">
+                                            <p className="text-sm text-gray-600 mb-3">You won this auction! Please complete your payment to finalize the transaction.</p>
+                                            <Button
+                                                onClick={() => initiatePayment({ auctionId: item._id })}
+                                                disabled={isInitiatingPayment}
+                                                className="w-full h-12 text-lg font-bold bg-[#1b4332] hover:bg-[#153427] text-white rounded shadow-lg shadow-[#1b4332]/20 flex items-center justify-center gap-2"
+                                            >
+                                                {isInitiatingPayment ? 'Proceeding...' : 'Pay with Khalti'}
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                             ) : (
                                 <p className="text-sm text-[var(--primary)]/70 italic">This auction ended without any bids.</p>

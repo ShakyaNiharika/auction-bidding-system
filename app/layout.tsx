@@ -8,8 +8,8 @@ import { SocketProvider } from '@/context/SocketContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'My Next.js App',
-  description: 'Built with Next.js 16',
+  title: 'Sugarcane Auction | Bidding Platform',
+  description: 'The premier digital marketplace for sugarcane auctions. Connecting farmers and buyers through transparent, real-time bidding technology.',
 };
 
 export default function RootLayout({

@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useCreateAuction } from '@/hooks/auction/useCreateAuction';
 import { useUpdateAuction } from '@/hooks/auction/useUpdateAuction';
+import { useGetVarieties } from '@/hooks/variety/useVarieties';
 import { WeightUnit, Auction } from '@/types/auction';
 import Button from '@/components/ui/custom-button/Button';
 import DatePicker from 'react-datepicker';
+import { X, UploadCloud, Loader2 } from 'lucide-react';
 import "react-datepicker/dist/react-datepicker.css";
 
 interface AuctionFormProps {
@@ -16,9 +18,14 @@ interface AuctionFormProps {
 export default function CreateAuctionForm({ initialData, id }: AuctionFormProps) {
     const { mutate: createAuction, isPending: isCreating } = useCreateAuction();
     const { mutate: updateAuction, isPending: isUpdating } = useUpdateAuction(id || '');
+    const { data: varieties } = useGetVarieties();
 
     const isEditMode = !!id;
-    const isPending = isCreating || isUpdating;
+    const [isUploading, setIsUploading] = useState(false);
+    const isPending = isCreating || isUpdating || isUploading;
+
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>(initialData?.images || []);
 
     const [formData, setFormData] = useState({
         title: initialData?.title || '',
@@ -38,7 +45,32 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleImageSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const files = Array.from(e.target.files);
+            // Limit to 5 images
+            if (selectedImages.length + files.length > 5) {
+                alert('You can only upload up to 5 images.');
+                return;
+            }
+            setSelectedImages(prev => [...prev, ...files]);
+            
+            // Create preview URLs
+            const newPreviews = files.map(file => URL.createObjectURL(file));
+            setPreviewUrls(prev => [...prev, ...newPreviews]);
+        }
+    };
+
+    const removeImage = (index: number) => {
+        // If it's a new file
+        if (index >= (initialData?.images?.length || 0)) {
+            const fileIndex = index - (initialData?.images?.length || 0);
+            setSelectedImages(prev => prev.filter((_, i) => i !== fileIndex));
+        }
+        setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Convert values for the API
@@ -51,7 +83,40 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
             harvest_date: formData.harvest_date?.toISOString(),
             start_time: formData.start_time?.toISOString(),
             end_time: formData.end_time?.toISOString(),
+            images: previewUrls.filter(url => !url.startsWith('blob:')), // Keep existing uploaded images
         };
+
+        // Upload new images first
+        if (selectedImages.length > 0) {
+            setIsUploading(true);
+            try {
+                const imgData = new FormData();
+                selectedImages.forEach(file => imgData.append('images', file));
+
+                const token = localStorage.getItem('userToken');
+                // Assume NEXT_PUBLIC_API_URL is available
+                const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/upload`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: imgData
+                });
+
+                if (!uploadRes.ok) throw new Error('Failed to upload images');
+
+                const uploadResult = await uploadRes.json();
+                if (uploadResult.success) {
+                    // Combine old existing image URLs with new uploaded URLs
+                    payload.images = [...payload.images, ...uploadResult.urls];
+                }
+            } catch (err) {
+                alert('Image upload failed. Please try again.');
+                setIsUploading(false);
+                return;
+            }
+            setIsUploading(false);
+        }
 
         if (isEditMode) {
             updateAuction(payload);
@@ -61,7 +126,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
     };
 
     return (
-        <div className="max-w-4xl bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+        <div className="w-full bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Basic Info */}
@@ -99,9 +164,9 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                     className={`w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                 >
                                     <option value="">Select Variety (Optional)</option>
-                                    <option value="CO 0238">CO 0238</option>
-                                    <option value="CO 1148">CO 1148</option>
-                                    <option value="Jitpur-5">Jitpur-5</option>
+                                    {varieties?.map(v => (
+                                        <option key={v._id} value={v.name}>{v.name}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -117,6 +182,45 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                 className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                             />
                         </div>
+
+                        {/* Pictures */}
+                        <div className="flex flex-col gap-2 pt-4 border-t">
+                            <label className="text-sm font-bold text-gray-700">Sugarcane Pictures</label>
+                            <p className="text-xs text-gray-500 mb-2">Upload up to 5 clear images of your sugarcane batch to attract better bids.</p>
+                            
+                            <div className="flex flex-wrap gap-4 mb-2">
+                                {/* Previews */}
+                                {previewUrls.map((url, idx) => (
+                                    <div key={idx} className="relative w-24 h-24 rounded-xl border overflow-hidden group">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={url.startsWith('blob:') ? url : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${url}`} alt="preview" className="w-full h-full object-cover" />
+                                        <button 
+                                            type="button"
+                                            onClick={() => removeImage(idx)}
+                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {/* Upload Button */}
+                                {previewUrls.length < 5 && (
+                                    <label className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+                                        <UploadCloud className="w-6 h-6 text-gray-400 mb-1" />
+                                        <span className="text-xs font-medium text-gray-500">Upload</span>
+                                        <input 
+                                            type="file" 
+                                            multiple 
+                                            accept="image/jpeg, image/png, image/webp" 
+                                            className="hidden" 
+                                            onChange={handleImageSelection}
+                                        />
+                                    </label>
+                                )}
+                            </div>
+                        </div>
+
                     </div>
 
                     {/* Pricing & Quantity */}
@@ -219,9 +323,12 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="px-10 py-3 rounded-xl font-black shadow-lg shadow-[#1b4332]/20"
+                        className="px-10 py-3 rounded-xl font-black shadow-lg shadow-[#1b4332]/20 flex items-center gap-2"
                     >
-                        {isPending ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Auction' : 'Launch Auction')}
+                        {isUploading && <Loader2 className="w-5 h-5 animate-spin" />}
+                        {isPending 
+                            ? (isUploading ? 'Uploading Images...' : (isEditMode ? 'Updating...' : 'Creating...')) 
+                            : (isEditMode ? 'Update Auction' : 'Launch Auction')}
                     </Button>
                 </div>
             </form>

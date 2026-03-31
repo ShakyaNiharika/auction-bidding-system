@@ -46,15 +46,20 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     {/* Brand Section */}
                     <div className="lg:col-span-2">
-                        <Link href="/" className="flex items-center space-x-2 mb-6">
-                            <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center">
-                                <span className="text-primary font-bold text-xl">N</span>
+                        <Link href="/" className="flex items-center space-x-3 mb-6 group">
+                            <div className="h-12 w-12 rounded-xl bg-white p-1.5 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-lg shadow-white/10">
+                                <img 
+                                    src="/logo.png" 
+                                    alt="Sugarcane Auction Logo" 
+                                    className="w-full h-full object-contain"
+                                />
                             </div>
-                            <span className="text-2xl font-bold">NextStore</span>
+                            <span className="text-2xl font-black tracking-tight">Sugarcane Auction</span>
                         </Link>
-                        <p className="text-gray-400 max-w-md mb-6">
-                            Building the future of e-commerce with cutting-edge technology
-                            and exceptional user experiences.
+                        <p className="text-gray-400 max-w-md mb-6 leading-relaxed">
+                            The premier digital marketplace for sugarcane auctions. 
+                            Connecting farmers and buyers through transparent, 
+                            real-time bidding technology.
                         </p>
                         <div className="flex space-x-4">
                             {footerLinks.Connect.map((item) => {
@@ -101,7 +106,7 @@ export default function Footer() {
                 <div className="border-t border-gray-800 mt-12 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center">
                         <p className="text-gray-400 text-sm">
-                            © {new Date().getFullYear()} NextStore. All rights reserved.
+                            © {new Date().getFullYear()} Sugarcane Auction. All rights reserved.
                         </p>
                         <div className="flex items-center space-x-6 mt-4 md:mt-0">
                             <Link
@@ -125,7 +130,7 @@ export default function Footer() {
                         </div>
                     </div>
                     <p className="text-gray-500 text-sm mt-4 text-center md:text-left">
-                        Built with Next.js 16, Tailwind CSS, and ❤️
+                        Built with Next.js 15, Tailwind CSS, and ❤️
                     </p>
                 </div>
             </div>

@@ -5,6 +5,12 @@ export enum AuctionStatus {
     CANCELLED = 'cancelled',
 }
 
+export enum PaymentStatus {
+    PENDING = 'pending',
+    COMPLETED = 'completed',
+    FAILED = 'failed',
+}
+
 export enum WeightUnit {
     TONS = 'tons',
     KG = 'kg',
@@ -33,8 +39,10 @@ export interface Auction {
     end_time: string;
     status: AuctionStatus;
     variety?: string;
+    images?: string[];
     winner?: AuctionSeller;
     winning_bid?: string;
+    payment_status?: PaymentStatus;
     createdAt: string;
     updatedAt: string;
 }
