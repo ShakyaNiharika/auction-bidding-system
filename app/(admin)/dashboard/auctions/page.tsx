@@ -1,16 +1,24 @@
 'use client';
 
-import { useGetMyAuctions } from '@/hooks/auction/useAuctionQueries';
+import { useGetMyAuctions, useGetAuctions } from '@/hooks/auction/useAuctionQueries';
 import { useDeleteAuction } from '@/hooks/auction/useDeleteAuction';
+import { useAuth } from '@/context/AuthContext';
 import { Auction } from '@/types/auction';
-import { Gavel, Plus, Edit2, Trash2, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Gavel, Plus, Edit2, Trash2, ExternalLink, User } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 export default function MyAuctionsPage() {
-    const { data: auctions, isLoading } = useGetMyAuctions();
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
+
+    const { data: myAuctions, isLoading: loadingMy } = useGetMyAuctions();
+    const { data: globalAuctions, isLoading: loadingGlobal } = useGetAuctions();
     const { mutate: deleteAuction, isPending: isDeleting } = useDeleteAuction();
+    
+    const auctions = isAdmin ? globalAuctions : myAuctions;
+    const isLoading = isAdmin ? loadingGlobal : loadingMy;
     
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedAuction, setSelectedAuction] = useState<{id: string, title: string} | null>(null);
@@ -35,8 +43,14 @@ export default function MyAuctionsPage() {
         <div className="space-y-8">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-gray-900">My Auctions</h1>
-                    <p className="text-gray-500 mt-2">Manage and monitor your active and past auction listings.</p>
+                    <h1 className="text-3xl font-extrabold text-gray-900">
+                        {isAdmin ? 'All Auctions' : 'My Auctions'}
+                    </h1>
+                    <p className="text-gray-500 mt-2">
+                        {isAdmin 
+                            ? 'Manage and monitor all active and past auction listings across the platform.' 
+                            : 'Manage and monitor your active and past auction listings.'}
+                    </p>
                 </div>
                 <Link href="/dashboard/auctions/create">
                     <button className="flex items-center gap-2 bg-[#1b4332] text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-[#1b4332]/10 hover:bg-[#153427] transition-all active:scale-95">
@@ -60,7 +74,7 @@ export default function MyAuctionsPage() {
                 {isLoading ? (
                     <div className="p-20 flex flex-col items-center justify-center gap-4">
                         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1b4332]"></div>
-                        <p className="text-gray-500 font-bold animate-pulse">Loading your auctions...</p>
+                        <p className="text-gray-500 font-bold animate-pulse">Loading {isAdmin ? 'all auctions' : 'your auctions'}...</p>
                     </div>
                 ) : auctions?.length === 0 ? (
                     <div className="p-20 text-center">
@@ -78,6 +92,7 @@ export default function MyAuctionsPage() {
                         <thead className="bg-gray-50 text-gray-400 text-[10px] uppercase font-black tracking-widest">
                             <tr>
                                 <th className="px-8 py-5">Item Details</th>
+                                {isAdmin && <th className="px-8 py-5">Seller</th>}
                                 <th className="px-8 py-5">Price Info</th>
                                 <th className="px-8 py-5">Status</th>
                                 <th className="px-8 py-5">Activity</th>
@@ -108,6 +123,16 @@ export default function MyAuctionsPage() {
                                             </div>
                                         </div>
                                     </td>
+                                    {isAdmin && (
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-2 text-gray-600">
+                                                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                    <User size={14} className="text-gray-400" />
+                                                </div>
+                                                <span className="text-sm font-bold">{(auction.seller as any)?.username}</span>
+                                            </div>
+                                        </td>
+                                    )}
                                     <td className="px-8 py-6">
                                         <div className="space-y-1">
                                             <p className="text-sm font-black text-gray-900">Rs. {auction.current_price?.toLocaleString() || auction.starting_price?.toLocaleString()}</p>

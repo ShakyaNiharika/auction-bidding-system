@@ -4,6 +4,7 @@ import { LayoutDashboard, Gavel, Users, TrendingUp, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useGetDashboardStats } from '@/hooks/auction/useAuctionQueries';
 import { Auction } from '@/types/auction';
+import { BiddingActivityChart, VarietyDistributionChart } from '@/components/admin/DashboardCharts';
 
 export default function AdminDashboard() {
     const { data: stats, isLoading } = useGetDashboardStats();
@@ -37,88 +38,61 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
-            {/* Main Content Grid */}
+            {/* Main Analytics Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Recent Activity */}
-                <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                        <h2 className="text-lg font-bold text-gray-900">Active Auctions</h2>
-                        <Link href="/dashboard/auctions/create">
-                            <button className="flex items-center gap-2 bg-[#1b4332] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#153427] transition-colors shadow-lg shadow-[#1b4332]/10">
-                                <Plus size={18} />
-                                Create New
-                            </button>
-                        </Link>
+                {/* Bidding Activity (Bar Chart) */}
+                <div className="lg:col-span-2 bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
+                    <div className="flex justify-between items-center mb-8">
+                        <div>
+                            <h2 className="text-xl font-black text-gray-900 tracking-tight">Bidding Activity</h2>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Last 7 Days Engagement</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <Link href="/dashboard/auctions/create">
+                                <button className="flex items-center gap-2 bg-[#1b4332] text-white px-4 py-2 rounded-xl text-xs font-black hover:bg-[#153427] transition-all shadow-lg shadow-[#1b4332]/20">
+                                    <Plus size={14} />
+                                    Create New
+                                </button>
+                            </Link>
+                            <span className="flex items-center gap-1 text-[10px] font-black text-[#1b4332] bg-[#1b4332]/10 px-2 py-1 rounded-full">
+                                <TrendingUp size={12} />
+                                +12%
+                            </span>
+                        </div>
                     </div>
-                    <div className="p-0">
-                        {isLoading ? (
-                            <div className="p-12 text-center text-gray-500 animate-pulse font-bold">Loading recent items...</div>
-                        ) : !stats?.recentActivity || stats.recentActivity.length === 0 ? (
-                            <div className="p-12 text-center text-gray-400 font-medium italic">No active auctions found.</div>
-                        ) : (
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-widest">
-                                    <tr>
-                                        <th className="px-8 py-4">Item</th>
-                                        <th className="px-8 py-4">Current Bid</th>
-                                        <th className="px-8 py-4">Status</th>
-                                        <th className="px-8 py-4">Activity</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {stats?.recentActivity?.map((auction: Auction) => (
-                                        <tr key={auction._id} className="hover:bg-gray-50/50 transition-colors">
-                                            <td className="px-8 py-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 bg-gray-100 rounded-xl overflow-hidden">
-                                                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                                            <Gavel size={16} className="text-gray-400" />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-gray-900">{auction.title}</p>
-                                                        <p className="text-xs text-gray-400 font-medium">Qty: {auction.quantity} {auction.unit}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4 text-sm font-black text-gray-900">
-                                                Rs. {auction.current_price?.toLocaleString() || auction.starting_price.toLocaleString()}
-                                            </td>
-                                            <td className="px-8 py-4">
-                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${auction.status === 'active' ? 'bg-[#1b4332]/10 text-[#1b4332]' : 'bg-gray-100 text-gray-500'}`}>
-                                                    {auction.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-8 py-4 text-sm font-bold text-gray-400">
-                                                12 Bids
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-                    </div>
+                    <BiddingActivityChart />
                 </div>
 
-                {/* Tasks/Quick Actions */}
-                <div className="bg-gray-900 rounded-3xl p-8 text-white">
-                    <h2 className="text-xl font-bold mb-6">Quick Actions</h2>
-                    <div className="space-y-4">
+                {/* Variety Distribution (Pie Chart) */}
+                <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h2 className="text-xl font-black text-gray-900 tracking-tight text-center">Variety Split</h2>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 text-center font-bold">Auction Distribution</p>
+                    </div>
+
+                    <VarietyDistributionChart />
+
+                    <div className="space-y-3 mt-6">
                         {[
-                            { label: 'Edit Profile Info', icon: Users },
-                            { label: 'View Analytics', icon: TrendingUp },
-                            { label: 'Manage Users', icon: Users },
-                        ].map((action, i) => (
-                            <button key={i} className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/10 hover:bg-white/20 transition-colors group">
-                                <div className="flex items-center gap-3">
-                                    <action.icon size={20} className="text-[#1b4332]" />
-                                    <span className="font-bold">{action.label}</span>
+                            { name: 'CO-0238', value: '40%', color: 'bg-[#1b4332]' },
+                            { name: 'CO-86032', value: '30%', color: 'bg-[#2d6a4f]' },
+                            { name: 'CO-0118', value: '30%', color: 'bg-[#40916c]' },
+                        ].map((variety, i) => (
+                            <div key={i} className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-2 h-2 rounded-full ${variety.color}`} />
+                                    <span className="text-xs font-bold text-gray-600 tracking-tight">{variety.name}</span>
                                 </div>
-                            </button>
+                                <span className="text-xs font-black text-gray-900">{variety.value}</span>
+                            </div>
                         ))}
                     </div>
                 </div>
             </div>
+
+            {/* Bottom Section - Recent List (Wait, no, user said replace active auctions) */}
+            {/* But maybe a small "Recent Winners" or something? No, I'll stick to analytics for now. */}
+
         </div>
     );
 }

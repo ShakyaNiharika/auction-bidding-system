@@ -48,7 +48,7 @@ export const registerSchema = yup.object().shape({
         .optional(),
     role: yup
         .string()
-        .oneOf(['buyer', 'seller'], 'Please select a valid role')
+        .oneOf(['buyer', 'seller', 'admin'], 'Please select a valid role')
         .required('Please select a role'),
 });
 

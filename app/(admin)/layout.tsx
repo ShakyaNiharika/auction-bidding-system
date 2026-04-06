@@ -14,12 +14,12 @@ export default function AdminLayout({
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoading && (!user || user.role !== 'seller')) {
+        if (!isLoading && (!user || (user.role !== 'seller' && user.role !== 'admin'))) {
             router.push('/');
         }
     }, [user, isLoading, router]);
 
-    if (isLoading || !user || user.role !== 'seller') {
+    if (isLoading || !user || (user.role !== 'seller' && user.role !== 'admin')) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1b4332]"></div>
@@ -37,7 +37,7 @@ export default function AdminLayout({
                 {/* Top Header for Admin */}
                 <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-30">
                     <h2 className="text-xl font-bold text-gray-800 capitalize">
-                        Seller Portal
+                        {user.role === 'admin' ? 'Admin Portal' : 'Seller Portal'}
                     </h2>
                     <div className="flex items-center gap-4">
                         <div className="text-right">

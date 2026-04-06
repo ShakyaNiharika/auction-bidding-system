@@ -124,14 +124,14 @@ export default function Header() {
                                                 My Profile
                                             </Link>
 
-                                            {user.role === 'seller' && (
+                                            {(user.role === 'seller' || user.role === 'admin') && (
                                                 <Link
                                                     href="/dashboard"
                                                     onClick={() => setIsAccountMenuOpen(false)}
                                                     className="group flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors mt-1"
                                                 >
                                                     <LayoutDashboard className="mr-3 h-5 w-5 text-gray-400 group-hover:text-red-600" />
-                                                    Admin Portal
+                                                    {user.role === 'admin' ? 'Admin Portal' : 'Seller Portal'}
                                                 </Link>
                                             )}
 
@@ -264,6 +264,16 @@ export default function Header() {
                                             <User className="mr-3 h-5 w-5 text-red-600" />
                                             My Profile
                                         </Link>
+                                        {(user.role === 'seller' || user.role === 'admin') && (
+                                            <Link
+                                                href="/dashboard"
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="flex items-center px-3 py-3 text-base font-medium text-gray-700 bg-gray-50 rounded-xl mt-2"
+                                            >
+                                                <LayoutDashboard className="mr-3 h-5 w-5 text-red-600" />
+                                                {user.role === 'admin' ? 'Admin Portal' : 'Seller Portal'}
+                                            </Link>
+                                        )}
                                         <button
                                             onClick={() => {
                                                 logout();

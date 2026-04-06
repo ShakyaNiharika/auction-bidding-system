@@ -14,17 +14,25 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-const menuItems = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'My Auctions', href: '/dashboard/auctions', icon: Gavel },
-    { name: 'Varieties', href: '/dashboard/varieties', icon: Sprout },
-    { name: 'Participants', href: '/dashboard/users', icon: Users },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-];
-
 export default function AdminSidebar() {
     const pathname = usePathname();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
+
+    const menuItems = [
+        { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+        { 
+            name: user?.role === 'admin' ? 'All Auctions' : 'My Auctions', 
+            href: '/dashboard/auctions', 
+            icon: Gavel 
+        },
+        { name: 'Varieties', href: '/dashboard/varieties', icon: Sprout },
+        { 
+            name: user?.role === 'admin' ? 'Manage Users' : 'Participants', 
+            href: '/dashboard/users', 
+            icon: Users 
+        },
+        { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+    ];
 
     return (
         <aside className="w-72 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
