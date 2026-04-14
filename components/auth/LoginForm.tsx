@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import Link from 'next/link';
 import Button from '@/components/ui/custom-button/Button';
 import { Eye, EyeOff } from 'lucide-react';
@@ -59,15 +61,14 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="bg-white shadow-2xl w-full max-w-[850px] min-h-[500px] overflow-hidden relative flex flex-col md:flex-row mx-auto">
-            {/* Left Side - Form (Pinterest Style: Form is prominent) */}
-            <div className="flex-1 p-8 md:p-12 flex flex-col justify-center text-center">
+        <div className="bg-white shadow-2xl w-full max-w-[1000px] min-h-[600px] overflow-hidden relative flex flex-col md:flex-row mx-auto rounded-2xl">
+            {/* Left Side - Form */}
+            <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center text-center">
 
                 {/* Header */}
                 <div className="mb-4 flex flex-col items-center">
-                    {/* Logo Icon */}
-                    <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center mb-4">
-                        <span className="text-white font-bold text-xl">B</span>
+                    <div className="mb-4">
+                        <Image src="/logo.png" alt="BIDS Logo" width={80} height={80} className="h-10 w-auto object-contain" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-1">Welcome to BIDS</h1>
                     <p className="text-gray-500 text-sm">Find new ideas to try</p>
@@ -148,40 +149,16 @@ export default function LoginForm() {
                 </div>
             </div>
 
-            {/* Right Side - Custom Promo (Pinterest Style) */}
-            {/* Hidden on mobile, takes about 45% width on desktop */}
-            <div className="hidden md:flex w-[380px] bg-gray-100 flex-col items-center justify-center p-8 relative overflow-hidden">
-                {/* Background Image/Graphic */}
-                <div className="absolute inset-0 z-0">
-                    {/* Abstract simple pattern for "BIDS" */}
-                    <div className="w-full h-full bg-slate-50 flex items-center justify-center relative overflow-hidden">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,_var(--color-primary)_0%,_transparent_70%)] opacity-10"></div>
-                        <div className="grid grid-cols-2 gap-4 rotate-12 opacity-80">
-                            <div className="w-32 h-40 bg-white rounded-xl shadow-lg transform translate-y-8"></div>
-                            <div className="w-32 h-40 bg-zinc-200 rounded-xl shadow-lg"></div>
-                            <div className="w-32 h-40 bg-zinc-100 rounded-xl shadow-lg transform -translate-y-4"></div>
-                            <div className="w-32 h-40 bg-white rounded-xl shadow-lg transform translate-y-4"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="relative z-10 text-center bg-white/80 backdrop-blur-md p-6 rounded-[24px] shadow-sm max-w-[280px]">
-                    <h3 className="font-bold text-lg text-gray-900 mb-2">Bid Instantly</h3>
-                    <p className="text-xs text-gray-600 mb-4 px-2">
-                        Scan to download the app and start bidding on exclusive items right away.
-                    </p>
-
-                    {/* Fake QR Code */}
-                    <div className="w-32 h-32 bg-gray-900 mx-auto rounded-xl flex items-center justify-center mb-2">
-                        <div className="w-28 h-28 bg-white rounded-lg flex flex-wrap content-center justify-center p-1 gap-1">
-                            <div className="w-12 h-12 border-2 border-black rounded-sm border-t-4 border-l-4"></div>
-                            <div className="w-12 h-12 border-2 border-black rounded-sm border-t-4 border-r-4"></div>
-                            <div className="w-12 h-12 border-2 border-black rounded-sm border-b-4 border-l-4"></div>
-                            <div className="w-12 h-12 bg-black rounded-lg"></div>
-                        </div>
-                    </div>
-                    <p className="text-[10px] uppercase tracking-wider font-bold text-gray-500">Scan QR Code</p>
-                </div>
+            {/* Right Side - Sugarcane Auction Image */}
+            <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
+                <Image
+                    src="/sugarcane_auction.png"
+                    alt="Sugarcane Auction Nepal"
+                    fill
+                    className="object-cover"
+                />
+                {/* Subtle overlay to soften the image */}
+                <div className="absolute inset-0 bg-black/5"></div>
             </div>
         </div>
     );

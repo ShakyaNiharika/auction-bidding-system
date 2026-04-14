@@ -9,6 +9,8 @@ import Button from '@/components/ui/custom-button/Button';
 import DatePicker from 'react-datepicker';
 import { X, UploadCloud, Loader2 } from 'lucide-react';
 import "react-datepicker/dist/react-datepicker.css";
+import * as yup from 'yup';
+import { auctionSchema } from '@/validations/auctionValidation';
 
 interface AuctionFormProps {
     initialData?: Partial<Auction>;
@@ -40,9 +42,16 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
         end_time: initialData?.end_time ? new Date(initialData.end_time) : null as Date | null,
     });
 
+    // Validation errors state
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear error on change
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: '' }));
+        }
     };
 
     const handleImageSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,8 +81,13 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrors({});
 
-        // Convert values for the API
+        try {
+            // Validate form data
+            await auctionSchema.validate(formData, { abortEarly: false });
+
+            // Convert values for the API
         const payload = {
             ...formData,
             variety: formData.variety || undefined,
@@ -123,7 +137,24 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
         } else {
             createAuction(payload);
         }
-    };
+    } catch (err) {
+        if (err instanceof yup.ValidationError) {
+            const fieldErrors: Record<string, string> = {};
+            err.inner.forEach((e) => {
+                if (e.path && !fieldErrors[e.path]) {
+                    fieldErrors[e.path] = e.message;
+                }
+            });
+            setErrors(fieldErrors);
+            // Scroll to the first error
+            const firstErrorField = err.inner[0].path;
+            if (firstErrorField) {
+                const element = document.getElementsByName(firstErrorField)[0];
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }
+};
 
     return (
         <div className="w-full bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
@@ -136,24 +167,24 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Auction Title</label>
                                 <input
-                                    required
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
                                     placeholder="e.g. Fresh Sugarcane - Batch A"
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.title ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                 />
+                                {errors.title && <p className="text-red-500 text-xs mt-1 ml-1">{errors.title}</p>}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Location</label>
                                 <input
-                                    required
                                     name="location"
                                     value={formData.location}
                                     onChange={handleChange}
                                     placeholder="e.g. Biratnagar, Morang"
-                                    className={`w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.location ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                 />
+                                {errors.location && <p className="text-red-500 text-xs mt-1 ml-1">{errors.location}</p>}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Sugarcane Variety</label>
@@ -173,14 +204,14 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-bold text-gray-700">Description</label>
                             <textarea
-                                required
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows={4}
                                 placeholder="Describe the quality, harvest process, or any special notes..."
-                                className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                className={`w-full px-4 py-3 rounded-2xl border ${errors.description ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                             />
+                            {errors.description && <p className="text-red-500 text-xs mt-1 ml-1">{errors.description}</p>}
                         </div>
 
                         {/* Pictures */}
@@ -230,24 +261,24 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Starting Price (Rs.)</label>
                                 <input
-                                    required
                                     type="number"
                                     name="starting_price"
                                     value={formData.starting_price}
                                     onChange={handleChange}
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.starting_price ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                 />
+                                {errors.starting_price && <p className="text-red-500 text-xs mt-1 ml-1">{errors.starting_price}</p>}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Quantity</label>
                                 <input
-                                    required
                                     type="number"
                                     name="quantity"
                                     value={formData.quantity}
                                     onChange={handleChange}
-                                    className={`w-full px-4 py-3 rounded-2xl border  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.quantity ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                 />
+                                {errors.quantity && <p className="text-red-500 text-xs mt-1 ml-1">{errors.quantity}</p>}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Unit</label>
@@ -273,41 +304,50 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                 <label className="text-sm font-bold text-gray-700">Harvest Date</label>
                                 <DatePicker
                                     selected={formData.harvest_date}
-                                    onChange={(date: any) => setFormData(prev => ({ ...prev, harvest_date: date }))}
+                                    onChange={(date: any) => {
+                                        setFormData(prev => ({ ...prev, harvest_date: date }));
+                                        if (errors.harvest_date) setErrors(prev => ({ ...prev, harvest_date: '' }));
+                                    }}
                                     dateFormat="MMMM d, yyyy"
                                     placeholderText="Select harvest date"
-                                    required
-                                    className="w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400"
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.harvest_date ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                     wrapperClassName="w-full"
                                 />
+                                {errors.harvest_date && <p className="text-red-500 text-xs mt-1 ml-1">{errors.harvest_date}</p>}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">Start Date & Time</label>
                                 <DatePicker
                                     selected={formData.start_time}
-                                    onChange={(date: any) => setFormData(prev => ({ ...prev, start_time: date }))}
+                                    onChange={(date: any) => {
+                                        setFormData(prev => ({ ...prev, start_time: date }));
+                                        if (errors.start_time) setErrors(prev => ({ ...prev, start_time: '' }));
+                                    }}
                                     showTimeSelect
                                     timeIntervals={1}
                                     dateFormat="MMMM d, yyyy h:mm aa"
                                     placeholderText="Select start date & time"
-                                    required
-                                    className="w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400"
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.start_time ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                     wrapperClassName="w-full"
                                 />
+                                {errors.start_time && <p className="text-red-500 text-xs mt-1 ml-1">{errors.start_time}</p>}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-bold text-gray-700">End Date & Time</label>
                                 <DatePicker
                                     selected={formData.end_time}
-                                    onChange={(date: any) => setFormData(prev => ({ ...prev, end_time: date }))}
+                                    onChange={(date: any) => {
+                                        setFormData(prev => ({ ...prev, end_time: date }));
+                                        if (errors.end_time) setErrors(prev => ({ ...prev, end_time: '' }));
+                                    }}
                                     showTimeSelect
                                     timeIntervals={1}
                                     dateFormat="MMMM d, yyyy h:mm aa"
                                     placeholderText="Select end date & time"
-                                    required
-                                    className="w-full px-4 py-3 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400"
+                                    className={`w-full px-4 py-3 rounded-2xl border ${errors.end_time ? 'border-red-400' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 hover:border-gray-400`}
                                     wrapperClassName="w-full"
                                 />
+                                {errors.end_time && <p className="text-red-500 text-xs mt-1 ml-1">{errors.end_time}</p>}
                             </div>
                         </div>
                     </div>

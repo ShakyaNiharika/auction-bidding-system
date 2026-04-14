@@ -6,6 +6,8 @@ import { Variety } from '@/types/variety';
 import Button from '@/components/ui/custom-button/Button';
 import { Plus, Trash2, Edit2, Loader2, X, AlertTriangle } from 'lucide-react';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import * as yup from 'yup';
+import { varietySchema } from '@/validations/varietyValidation';
 
 export default function VarietiesPage() {
     const { data: varieties, isLoading } = useGetVarieties();
@@ -25,6 +27,10 @@ export default function VarietiesPage() {
         metricLabel: '',
         image: ''
     });
+
+    // Validation errors state
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
     const [isUploading, setIsUploading] = useState(false);
 
     const handleOpenModal = (variety?: Variety) => {
@@ -54,6 +60,7 @@ export default function VarietiesPage() {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+        setErrors({});
         setFormData({ 
             name: '', 
             description: '',
@@ -82,6 +89,7 @@ export default function VarietiesPage() {
                 const result = await res.json();
                 if (result.success && result.urls.length > 0) {
                     setFormData(prev => ({ ...prev, image: result.urls[0] }));
+                    if (errors.image) setErrors(prev => ({ ...prev, image: '' }));
                 }
             } catch (err) {
                 console.error('Upload failed', err);
@@ -91,12 +99,29 @@ export default function VarietiesPage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (selectedVariety) {
-            updateVariety({ id: selectedVariety._id, data: formData }, { onSuccess: handleCloseModal });
-        } else {
-            createVariety(formData, { onSuccess: handleCloseModal });
+        setErrors({});
+
+        try {
+            // Validate form data
+            await varietySchema.validate(formData, { abortEarly: false });
+
+            if (selectedVariety) {
+                updateVariety({ id: selectedVariety._id, data: formData }, { onSuccess: handleCloseModal });
+            } else {
+                createVariety(formData, { onSuccess: handleCloseModal });
+            }
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const fieldErrors: Record<string, string> = {};
+                err.inner.forEach((e) => {
+                    if (e.path && !fieldErrors[e.path]) {
+                        fieldErrors[e.path] = e.message;
+                    }
+                });
+                setErrors(fieldErrors);
+            }
         }
     };
 
@@ -199,22 +224,22 @@ export default function VarietiesPage() {
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleCloseModal} />
-                    <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-8 sm:p-10">
+                    <div className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-6 sm:p-8">
                         <button onClick={handleCloseModal} className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-all">
                             <X size={20} />
                         </button>
 
-                        <h3 className="text-2xl font-black text-gray-900 mb-6">{selectedVariety ? 'Edit Variety' : 'Add New Variety'}</h3>
+                        <h3 className="text-xl font-black text-gray-900 mb-4">{selectedVariety ? 'Edit Variety' : 'Add New Variety'}</h3>
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="flex flex-col items-center mb-6">
-                                <label className="relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#1b4332] hover:bg-[#1b4332]/5 transition-all overflow-hidden group">
+                        <form onSubmit={handleSubmit} className="space-y-3">
+                            <div className="flex flex-col items-center mb-4">
+                                <label className={`relative w-24 h-24 rounded-full border-2 border-dashed ${errors.image ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-[#1b4332] hover:bg-[#1b4332]/5'} flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden group`}>
                                     {formData.image ? (
                                         <img src={`${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/$/, '')}${formData.image}`} alt="Variety" className="w-full h-full object-cover" />
                                     ) : (
                                         <>
-                                            <Plus size={24} className="text-gray-400 group-hover:text-[#1b4332]" />
-                                            <span className="text-[10px] font-bold text-gray-400 group-hover:text-[#1b4332]">Photo</span>
+                                            <Plus size={24} className={`${errors.image ? 'text-red-400' : 'text-gray-400'} group-hover:text-[#1b4332]`} />
+                                            <span className={`text-[10px] font-bold ${errors.image ? 'text-red-400' : 'text-gray-400'} group-hover:text-[#1b4332]`}>Photo</span>
                                         </>
                                     )}
                                     {isUploading && (
@@ -224,50 +249,58 @@ export default function VarietiesPage() {
                                     )}
                                     <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
                                 </label>
-                                <p className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-widest">Variety Image</p>
+                                <p className={`text-[10px] font-bold ${errors.image ? 'text-red-500' : 'text-gray-400'} mt-2 uppercase tracking-widest`}>
+                                    {errors.image || 'Variety Image'}
+                                </p>
                             </div>
+ drum
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2 col-span-2">
                                     <label className="text-sm font-bold text-gray-700">Variety Name</label>
                                     <input
-                                        required
                                         value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        onChange={(e) => {
+                                            setFormData({ ...formData, name: e.target.value });
+                                            if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                                        }}
                                         placeholder="e.g. CO 0238"
-                                        className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
+                                        className={`w-full px-5 py-3 text-gray-400 rounded-2xl border ${errors.name ? 'border-red-400' : 'focus:ring-[#1b4332]/20'} focus:ring-2 focus:outline-none placeholder:text-gray-300`}
                                     />
+                                    {errors.name && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1 uppercase">{errors.name}</p>}
                                 </div>
                                 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Badge/Tag</label>
-                                    <input
-                                        value={formData.tag}
-                                        onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-                                        placeholder="e.g. TRENDING"
-                                        className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Metric Value</label>
-                                    <input
-                                        value={formData.metricValue}
-                                        onChange={(e) => setFormData({ ...formData, metricValue: e.target.value })}
-                                        placeholder="e.g. 10.5 - 11.2%"
-                                        className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
-                                    />
-                                </div>
-
-                                <div className="space-y-2 col-span-2">
-                                    <label className="text-sm font-bold text-gray-700">Metric Label</label>
-                                    <input
-                                        value={formData.metricLabel}
-                                        onChange={(e) => setFormData({ ...formData, metricLabel: e.target.value })}
-                                        placeholder="e.g. SUGAR RECOVERY"
-                                        className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
-                                    />
-                                </div>
+                                {/**
+                                 <div className="space-y-2">
+                                     <label className="text-sm font-bold text-gray-700">Badge/Tag</label>
+                                     <input
+                                         value={formData.tag}
+                                         onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
+                                         placeholder="e.g. TRENDING"
+                                         className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
+                                     />
+                                 </div>
+ 
+                                 <div className="space-y-2">
+                                     <label className="text-sm font-bold text-gray-700">Metric Value</label>
+                                     <input
+                                         value={formData.metricValue}
+                                         onChange={(e) => setFormData({ ...formData, metricValue: e.target.value })}
+                                         placeholder="e.g. 10.5 - 11.2%"
+                                         className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
+                                     />
+                                 </div>
+ 
+                                 <div className="space-y-2 col-span-2">
+                                     <label className="text-sm font-bold text-gray-700">Metric Label</label>
+                                     <input
+                                         value={formData.metricLabel}
+                                         onChange={(e) => setFormData({ ...formData, metricLabel: e.target.value })}
+                                         placeholder="e.g. SUGAR RECOVERY"
+                                         className="w-full px-5 py-3 text-gray-400 rounded-2xl border focus:ring-2 focus:ring-[#1b4332]/20 focus:outline-none placeholder:text-gray-300"
+                                     />
+                                 </div>
+                                 **/}
                             </div>
 
                             <div className="space-y-2">
