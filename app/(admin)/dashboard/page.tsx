@@ -39,9 +39,9 @@ export default function AdminDashboard() {
             </div>
 
             {/* Main Analytics Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8">
                 {/* Bidding Activity (Bar Chart) */}
-                <div className="lg:col-span-2 bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
+                <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <div>
                             <h2 className="text-xl font-black text-gray-900 tracking-tight">Bidding Activity</h2>
@@ -61,32 +61,6 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                     <BiddingActivityChart />
-                </div>
-
-                {/* Variety Distribution (Pie Chart) */}
-                <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <h2 className="text-xl font-black text-gray-900 tracking-tight text-center">Variety Split</h2>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 text-center font-bold">Auction Distribution</p>
-                    </div>
-
-                    <VarietyDistributionChart />
-
-                    <div className="space-y-3 mt-6">
-                        {[
-                            { name: 'CO-0238', value: '40%', color: 'bg-[#1b4332]' },
-                            { name: 'CO-86032', value: '30%', color: 'bg-[#2d6a4f]' },
-                            { name: 'CO-0118', value: '30%', color: 'bg-[#40916c]' },
-                        ].map((variety, i) => (
-                            <div key={i} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${variety.color}`} />
-                                    <span className="text-xs font-bold text-gray-600 tracking-tight">{variety.name}</span>
-                                </div>
-                                <span className="text-xs font-black text-gray-900">{variety.value}</span>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </div>
 

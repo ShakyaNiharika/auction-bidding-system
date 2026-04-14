@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
@@ -37,18 +37,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
     }, []);
 
-    const login = (userData: User, token: string) => {
+    const login = useCallback((userData: User, token: string) => {
         localStorage.setItem('userToken', token);
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
-    };
+    }, []);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         localStorage.removeItem('userToken');
         localStorage.removeItem('user');
         setUser(null);
         router.push('/');
-    };
+    }, [router]);
 
     return (
         <AuthContext.Provider value={{ user, isLoading, login, logout }}>

@@ -8,6 +8,7 @@ import { Gavel, Plus, Edit2, Trash2, ExternalLink, User } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import AuctionLiveModal from '@/components/auction/AuctionLiveModal';
 
 export default function MyAuctionsPage() {
     const { user } = useAuth();
@@ -21,7 +22,10 @@ export default function MyAuctionsPage() {
     const isLoading = isAdmin ? loadingGlobal : loadingMy;
     
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [selectedAuction, setSelectedAuction] = useState<{id: string, title: string} | null>(null);
+    const [selectedAuction, setSelectedAuction] = useState<{ id: string, title: string } | null>(null);
+    const [activeTab, setActiveTab] = useState('All');
+    const [isLiveModalOpen, setIsLiveModalOpen] = useState(false);
+    const [liveAuctionId, setLiveAuctionId] = useState<string | null>(null);
 
     const handleConfirmDelete = (id: string, title: string) => {
         setSelectedAuction({ id, title });
@@ -37,6 +41,11 @@ export default function MyAuctionsPage() {
                 }
             });
         }
+    };
+
+    const handleViewLive = (id: string) => {
+        setLiveAuctionId(id);
+        setIsLiveModalOpen(true);
     };
 
     return (
@@ -60,10 +69,14 @@ export default function MyAuctionsPage() {
                 </Link>
             </div>
 
-            {/* Filter Bar Placeholder */}
+            {/* Filter Bar */}
             <div className="flex gap-4 p-2 bg-gray-100/50 rounded-2xl w-fit">
-                {['All', 'Active', 'Drafts', 'Sold'].map((tab) => (
-                    <button key={tab} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === 'All' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                {['All', 'Active', 'Sold'].map((tab) => (
+                    <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
                         {tab}
                     </button>
                 ))}
@@ -100,7 +113,11 @@ export default function MyAuctionsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {auctions?.map((auction: Auction) => (
+                            {auctions?.filter((auction: Auction) => {
+                                if (activeTab === 'Active') return auction.status === 'active';
+                                if (activeTab === 'Sold') return auction.status === 'completed';
+                                return true;
+                            }).map((auction: Auction) => (
                                 <tr key={auction._id} className="hover:bg-gray-50/50 transition-colors group">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-4">
@@ -154,8 +171,12 @@ export default function MyAuctionsPage() {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6 text-right">
-                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button title="View Live" className="p-2 text-gray-400 hover:text-[#1b4332] transition-colors">
+                                        <div className="flex items-center justify-end gap-2 transition-opacity">
+                                            <button
+                                                onClick={() => handleViewLive(auction._id)}
+                                                title="View Live"
+                                                className="p-2 text-gray-400 hover:text-[#1b4332] transition-colors"
+                                            >
                                                 <ExternalLink size={18} />
                                             </button>
                                             <Link href={`/dashboard/auctions/edit/${auction._id}`}>
@@ -188,6 +209,12 @@ export default function MyAuctionsPage() {
                 confirmText="Delete"
                 variant="danger"
                 isLoading={isDeleting}
+            />
+
+            <AuctionLiveModal
+                isOpen={isLiveModalOpen}
+                onClose={() => setIsLiveModalOpen(false)}
+                auctionId={liveAuctionId || ''}
             />
         </div>
     );

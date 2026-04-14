@@ -36,3 +36,20 @@ export const useDeleteUser = () => {
         }
     });
 };
+
+export const useUpdateUser = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, data }: { id: string; data: any }) => {
+            const response = await api.patch(`users/${id}`, data);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast.success("User updated successfully");
+        },
+        onError: (error: any) => {
+            toast.error(error?.response?.data?.message || "Failed to update user");
+        }
+    });
+};

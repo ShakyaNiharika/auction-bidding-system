@@ -20,18 +20,19 @@ export default function AdminSidebar() {
 
     const menuItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-        { 
-            name: user?.role === 'admin' ? 'All Auctions' : 'My Auctions', 
-            href: '/dashboard/auctions', 
-            icon: Gavel 
+        {
+            name: user?.role === 'admin' ? 'All Auctions' : 'Auction Management',
+            href: '/dashboard/auctions',
+            icon: Gavel
         },
-        { name: 'Varieties', href: '/dashboard/varieties', icon: Sprout },
-        { 
-            name: user?.role === 'admin' ? 'Manage Users' : 'Participants', 
-            href: '/dashboard/users', 
-            icon: Users 
-        },
-        { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+        { name: 'Variety Management', href: '/dashboard/varieties', icon: Sprout },
+        // Only show Manage Users/Participants for admin
+        ...(user?.role === 'admin' ? [{
+            name: 'Manage Users',
+            href: '/dashboard/users',
+            icon: Users
+        }] : []),
+        // { name: 'Settings', href: '/dashboard/settings', icon: Settings },
     ];
 
     return (
@@ -40,10 +41,10 @@ export default function AdminSidebar() {
             <div className="p-8">
                 <Link href="/" className="flex items-center gap-3 group">
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-gray-100 group-hover:scale-110 transition-transform border border-gray-100">
-                        <img 
-                            src="/logo.png" 
-                            alt="Logo" 
-                            className="w-full h-full object-contain" 
+                        <img
+                            src="/logo.png"
+                            alt="Logo"
+                            className="w-full h-full object-contain"
                         />
                     </div>
                     <div className="flex flex-col">

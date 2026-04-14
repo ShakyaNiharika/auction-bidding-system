@@ -3,10 +3,10 @@
 import { useGetParticipants } from '@/hooks/auction/useAuctionQueries';
 import { useGetUsers, useDeleteUser } from '@/hooks/user/useUserQueries';
 import { useAuth } from '@/context/AuthContext';
-import { Search, Mail, Calendar, Trash2, UserPlus } from 'lucide-react';
-import { useState } from 'react';
 import AddUserModal from '@/components/admin/AddUserModal';
+import EditUserModal from '@/components/admin/EditUserModal';
 import { useQueryClient } from '@tanstack/react-query';
+import { Edit2 } from 'lucide-react';
 
 export default function UsersPage() {
     const { user: currentUser } = useAuth();
@@ -19,6 +19,8 @@ export default function UsersPage() {
     const queryClient = useQueryClient();
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
 
     const isLoading = isAdmin ? loadingAllUsers : loadingParticipants;
     const data = isAdmin ? allUsers : participants;
@@ -31,6 +33,11 @@ export default function UsersPage() {
 
     const handleAddSuccess = () => {
         queryClient.invalidateQueries({ queryKey: ["users"] });
+    };
+
+    const handleEdit = (u: any) => {
+        setSelectedUser(u);
+        setIsEditModalOpen(true);
     };
 
     if (isLoading) {
@@ -130,14 +137,22 @@ export default function UsersPage() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-5 text-right">
-                                            {u._id !== currentUser?.id && (
-                                                <button 
-                                                    onClick={() => handleDelete(u._id, `${u.first_name} ${u.last_name}`)}
-                                                    className="p-2 text-gray-300 hover:text-red-500 transition-colors"
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(u)}
+                                                    className="p-2 text-gray-300 hover:text-[#1b4332] transition-colors"
                                                 >
-                                                    <Trash2 size={16} />
+                                                    <Edit2 size={16} />
                                                 </button>
-                                            )}
+                                                {u._id !== currentUser?.id && (
+                                                    <button
+                                                        onClick={() => handleDelete(u._id, `${u.first_name} ${u.last_name}`)}
+                                                        className="p-2 text-gray-300 hover:text-red-500 transition-colors"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -199,6 +214,16 @@ export default function UsersPage() {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onSuccess={handleAddSuccess}
+            />
+
+            <EditUserModal
+                isOpen={isEditModalOpen}
+                onClose={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedUser(null);
+                }}
+                onSuccess={handleAddSuccess}
+                userData={selectedUser}
             />
         </div>
     );

@@ -11,6 +11,7 @@ import { X, UploadCloud, Loader2 } from 'lucide-react';
 import "react-datepicker/dist/react-datepicker.css";
 import * as yup from 'yup';
 import { auctionSchema } from '@/validations/auctionValidation';
+import { useRouter } from 'next/navigation';
 
 interface AuctionFormProps {
     initialData?: Partial<Auction>;
@@ -22,6 +23,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
     const { mutate: updateAuction, isPending: isUpdating } = useUpdateAuction(id || '');
     const { data: varieties } = useGetVarieties();
 
+    const router = useRouter();
     const isEditMode = !!id;
     const [isUploading, setIsUploading] = useState(false);
     const isPending = isCreating || isUpdating || isUploading;
@@ -63,7 +65,7 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                 return;
             }
             setSelectedImages(prev => [...prev, ...files]);
-            
+
             // Create preview URLs
             const newPreviews = files.map(file => URL.createObjectURL(file));
             setPreviewUrls(prev => [...prev, ...newPreviews]);
@@ -88,73 +90,73 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
             await auctionSchema.validate(formData, { abortEarly: false });
 
             // Convert values for the API
-        const payload = {
-            ...formData,
-            variety: formData.variety || undefined,
-            starting_price: Number(formData.starting_price),
-            quantity: Number(formData.quantity),
-            current_price: Number(formData.starting_price),
-            harvest_date: formData.harvest_date?.toISOString(),
-            start_time: formData.start_time?.toISOString(),
-            end_time: formData.end_time?.toISOString(),
-            images: previewUrls.filter(url => !url.startsWith('blob:')), // Keep existing uploaded images
-        };
+            const payload = {
+                ...formData,
+                variety: formData.variety || undefined,
+                starting_price: Number(formData.starting_price),
+                quantity: Number(formData.quantity),
+                current_price: Number(formData.starting_price),
+                harvest_date: formData.harvest_date?.toISOString(),
+                start_time: formData.start_time?.toISOString(),
+                end_time: formData.end_time?.toISOString(),
+                images: previewUrls.filter(url => !url.startsWith('blob:')), // Keep existing uploaded images
+            };
 
-        // Upload new images first
-        if (selectedImages.length > 0) {
-            setIsUploading(true);
-            try {
-                const imgData = new FormData();
-                selectedImages.forEach(file => imgData.append('images', file));
+            // Upload new images first
+            if (selectedImages.length > 0) {
+                setIsUploading(true);
+                try {
+                    const imgData = new FormData();
+                    selectedImages.forEach(file => imgData.append('images', file));
 
-                const token = localStorage.getItem('userToken');
-                // Assume NEXT_PUBLIC_API_URL is available
-                const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/upload`, {
-                    method: 'POST',
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: imgData
-                });
+                    const token = localStorage.getItem('userToken');
+                    // Assume NEXT_PUBLIC_API_URL is available
+                    const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/upload`, {
+                        method: 'POST',
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: imgData
+                    });
 
-                if (!uploadRes.ok) throw new Error('Failed to upload images');
+                    if (!uploadRes.ok) throw new Error('Failed to upload images');
 
-                const uploadResult = await uploadRes.json();
-                if (uploadResult.success) {
-                    // Combine old existing image URLs with new uploaded URLs
-                    payload.images = [...payload.images, ...uploadResult.urls];
+                    const uploadResult = await uploadRes.json();
+                    if (uploadResult.success) {
+                        // Combine old existing image URLs with new uploaded URLs
+                        payload.images = [...payload.images, ...uploadResult.urls];
+                    }
+                } catch (err) {
+                    alert('Image upload failed. Please try again.');
+                    setIsUploading(false);
+                    return;
                 }
-            } catch (err) {
-                alert('Image upload failed. Please try again.');
                 setIsUploading(false);
-                return;
             }
-            setIsUploading(false);
-        }
 
-        if (isEditMode) {
-            updateAuction(payload);
-        } else {
-            createAuction(payload);
-        }
-    } catch (err) {
-        if (err instanceof yup.ValidationError) {
-            const fieldErrors: Record<string, string> = {};
-            err.inner.forEach((e) => {
-                if (e.path && !fieldErrors[e.path]) {
-                    fieldErrors[e.path] = e.message;
+            if (isEditMode) {
+                updateAuction(payload);
+            } else {
+                createAuction(payload);
+            }
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const fieldErrors: Record<string, string> = {};
+                err.inner.forEach((e) => {
+                    if (e.path && !fieldErrors[e.path]) {
+                        fieldErrors[e.path] = e.message;
+                    }
+                });
+                setErrors(fieldErrors);
+                // Scroll to the first error
+                const firstErrorField = err.inner[0].path;
+                if (firstErrorField) {
+                    const element = document.getElementsByName(firstErrorField)[0];
+                    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-            });
-            setErrors(fieldErrors);
-            // Scroll to the first error
-            const firstErrorField = err.inner[0].path;
-            if (firstErrorField) {
-                const element = document.getElementsByName(firstErrorField)[0];
-                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
-    }
-};
+    };
 
     return (
         <div className="w-full bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
@@ -218,14 +220,14 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                         <div className="flex flex-col gap-2 pt-4 border-t">
                             <label className="text-sm font-bold text-gray-700">Sugarcane Pictures</label>
                             <p className="text-xs text-gray-500 mb-2">Upload up to 5 clear images of your sugarcane batch to attract better bids.</p>
-                            
+
                             <div className="flex flex-wrap gap-4 mb-2">
                                 {/* Previews */}
                                 {previewUrls.map((url, idx) => (
                                     <div key={idx} className="relative w-24 h-24 rounded-xl border overflow-hidden group">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img src={url.startsWith('blob:') ? url : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${url}`} alt="preview" className="w-full h-full object-cover" />
-                                        <button 
+                                        <button
                                             type="button"
                                             onClick={() => removeImage(idx)}
                                             className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -240,11 +242,11 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                                     <label className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
                                         <UploadCloud className="w-6 h-6 text-gray-400 mb-1" />
                                         <span className="text-xs font-medium text-gray-500">Upload</span>
-                                        <input 
-                                            type="file" 
-                                            multiple 
-                                            accept="image/jpeg, image/png, image/webp" 
-                                            className="hidden" 
+                                        <input
+                                            type="file"
+                                            multiple
+                                            accept="image/jpeg, image/png, image/webp"
+                                            className="hidden"
                                             onChange={handleImageSelection}
                                         />
                                     </label>
@@ -356,9 +358,10 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                 <div className="pt-6 border-t flex justify-end gap-4">
                     <button
                         type="button"
+                        onClick={() => router.back()}
                         className="px-8 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors"
                     >
-                        Save as Draft
+                        Cancel
                     </button>
                     <Button
                         type="submit"
@@ -366,9 +369,9 @@ export default function CreateAuctionForm({ initialData, id }: AuctionFormProps)
                         className="px-10 py-3 rounded-xl font-black shadow-lg shadow-[#1b4332]/20 flex items-center gap-2"
                     >
                         {isUploading && <Loader2 className="w-5 h-5 animate-spin" />}
-                        {isPending 
-                            ? (isUploading ? 'Uploading Images...' : (isEditMode ? 'Updating...' : 'Creating...')) 
-                            : (isEditMode ? 'Update Auction' : 'Launch Auction')}
+                        {isPending
+                            ? (isUploading ? 'Uploading Images...' : (isEditMode ? 'Updating...' : 'Creating...'))
+                            : (isEditMode ? 'Update Auction' : 'Add Auction')}
                     </Button>
                 </div>
             </form>
