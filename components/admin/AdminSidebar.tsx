@@ -10,7 +10,8 @@ import {
     ChevronRight,
     LogOut,
     Home,
-    Sprout
+    Sprout,
+    Mail
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -27,11 +28,18 @@ export default function AdminSidebar() {
         },
         { name: 'Variety Management', href: '/dashboard/varieties', icon: Sprout },
         // Only show Manage Users/Participants for admin
-        ...(user?.role === 'admin' ? [{
-            name: 'Manage Users',
-            href: '/dashboard/users',
-            icon: Users
-        }] : []),
+        ...(user?.role === 'admin' ? [
+            {
+                name: 'Manage Users',
+                href: '/dashboard/users',
+                icon: Users
+            },
+            {
+                name: 'Customer Queries',
+                href: '/dashboard/queries',
+                icon: Mail
+            }
+        ] : []),
         // { name: 'Settings', href: '/dashboard/settings', icon: Settings },
     ];
 

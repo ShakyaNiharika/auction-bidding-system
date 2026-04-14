@@ -2,6 +2,7 @@
 
 import { MapPin, Phone, Mail, Clock, ShieldCheck, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { useCreateInquiry } from '@/hooks/inquiry/useInquiry';
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -23,7 +24,9 @@ export default function ContactPage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const createInquiryMutation = useCreateInquiry();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Simple mock validation
@@ -42,15 +45,17 @@ export default function ContactPage() {
         }
 
         // Handle success
-        console.log("Form submitted", formData);
-        alert("Message sent successfully!");
-        setFormData({
-            fullName: '',
-            email: '',
-            phone: '',
-            inquiryType: '',
-            subject: '',
-            message: ''
+        createInquiryMutation.mutate(formData, {
+            onSuccess: () => {
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    phone: '',
+                    inquiryType: '',
+                    subject: '',
+                    message: ''
+                });
+            }
         });
     };
 
@@ -159,8 +164,12 @@ export default function ContactPage() {
                                 {errors.message && <p className="text-red-500 text-xs mt-1 ml-1">{errors.message}</p>}
                             </div>
 
-                            <button type="submit" className="w-full py-5 bg-[#1b4332] text-white rounded-xl font-bold hover:bg-[#153427] transition-all shadow-lg active:scale-[0.98]">
-                                Send Message
+                            <button 
+                                type="submit" 
+                                disabled={createInquiryMutation.isPending}
+                                className="w-full py-5 bg-[#1b4332] text-white rounded-xl font-bold hover:bg-[#153427] transition-all shadow-lg active:scale-[0.98] disabled:opacity-50"
+                            >
+                                {createInquiryMutation.isPending ? 'Sending...' : 'Send Message'}
                             </button>
                         </form>
                     </div>
