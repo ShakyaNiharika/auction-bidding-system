@@ -6,7 +6,8 @@ import { useAuth } from '@/context/AuthContext';
 import AddUserModal from '@/components/admin/AddUserModal';
 import EditUserModal from '@/components/admin/EditUserModal';
 import { useQueryClient } from '@tanstack/react-query';
-import { Edit2 } from 'lucide-react';
+import { Calendar, Edit2, Mail, Search, Trash2, UserPlus } from 'lucide-react';
+import { useState } from 'react';
 
 export default function UsersPage() {
     const { user: currentUser } = useAuth();
@@ -57,14 +58,14 @@ export default function UsersPage() {
                         {isAdmin ? 'User Management' : 'Participants'}
                     </h1>
                     <p className="text-gray-500 mt-2">
-                        {isAdmin 
-                            ? 'Overview of all registered sellers, buyers, and administrators.' 
+                        {isAdmin
+                            ? 'Overview of all registered sellers, buyers, and administrators.'
                             : 'Manage and view engagement from potential buyers.'}
                     </p>
                 </div>
 
                 {isAdmin && (
-                    <button 
+                    <button
                         onClick={() => setIsAddModalOpen(true)}
                         className="bg-[#1b4332] text-white px-6 py-4 rounded-[20px] font-black text-sm flex items-center gap-3 hover:bg-[#153427] transition-all shadow-xl shadow-green-100 active:scale-95"
                     >
@@ -122,11 +123,10 @@ export default function UsersPage() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-5">
-                                            <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider ${
-                                                u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                                                u.role === 'seller' ? 'bg-blue-100 text-blue-700' :
-                                                'bg-[#1b4332]/10 text-[#1b4332]'
-                                            }`}>
+                                            <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                                                    u.role === 'seller' ? 'bg-blue-100 text-blue-700' :
+                                                        'bg-[#1b4332]/10 text-[#1b4332]'
+                                                }`}>
                                                 {u.role}
                                             </span>
                                         </td>
@@ -210,7 +210,7 @@ export default function UsersPage() {
                 )}
             </div>
 
-            <AddUserModal 
+            <AddUserModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onSuccess={handleAddSuccess}

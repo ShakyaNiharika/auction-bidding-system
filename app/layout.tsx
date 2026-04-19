@@ -8,8 +8,12 @@ import { SocketProvider } from '@/context/SocketContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Sugarcane Auction | Bidding Platform',
+  title: 'Bids Awesome | Bidding Platform',
   description: 'The premier digital marketplace for sugarcane auctions. Connecting farmers and buyers through transparent, real-time bidding technology.',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -49,15 +50,17 @@ export default function AdminSidebar() {
             <div className="p-8">
                 <Link href="/" className="flex items-center gap-3 group">
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-gray-100 group-hover:scale-110 transition-transform border border-gray-100">
-                        <img
+                        <Image
                             src="/logo.png"
                             alt="Logo"
+                            width={40}
+                            height={40}
                             className="w-full h-full object-contain"
                         />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-base font-black text-gray-900 leading-none tracking-tight">Sugarcane</span>
-                        <span className="text-sm font-bold text-[#1b4332] leading-none mt-0.5 uppercase tracking-widest">Auction</span>
+                        <span className="text-base font-black text-gray-900 leading-none tracking-tight">Bids</span>
+                        <span className="text-sm font-bold text-[#1b4332] leading-none mt-0.5 uppercase tracking-widest">Awesome</span>
                     </div>
                 </Link>
             </div>

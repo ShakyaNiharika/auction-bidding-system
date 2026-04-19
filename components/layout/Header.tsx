@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import Button from '../ui/custom-button/Button';
 import { useAuth } from '@/context/AuthContext';
@@ -51,14 +52,16 @@ export default function Header() {
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-3 group">
                             <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
-                                <img 
+                                <Image 
                                     src="/logo.png" 
-                                    alt="Sugarcane Auction Logo" 
+                                    alt="Bids Awesome Logo" 
+                                    width={40}
+                                    height={40}
                                     className="w-full h-full object-contain"
                                 />
                             </div>
                             <span className="text-xl font-black text-[#1b4332] hidden sm:inline-block tracking-tight">
-                                Sugarcane Auction
+                                Bids Awesome
                             </span>
                         </Link>
                     </div>

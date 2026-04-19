@@ -82,7 +82,7 @@ export default function RegisterForm() {
                 {/* Header */}
                 <div className="mb-4 flex flex-col items-center">
                     <div className="mb-4">
-                        <Image src="/logo.png" alt="BIDS Logo" width={80} height={80} className="h-10 w-auto object-contain" />
+                        <Image src="/logo.png" alt="Bids Awesome Logo" width={80} height={80} className="h-10 w-auto object-contain" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-1">Registration page</h1>
                     <p className="text-gray-500 text-sm">Create your account to get started</p>
@@ -252,7 +252,7 @@ export default function RegisterForm() {
             <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
                 <Image
                     src="/sugarcane_auction.png"
-                    alt="Sugarcane Auction Nepal"
+                    alt="Bids Awesome Nepal"
                     fill
                     className="object-cover"
                 />

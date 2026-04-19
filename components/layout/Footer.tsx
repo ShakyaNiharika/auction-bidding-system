@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 
@@ -41,13 +42,15 @@ export default function Footer() {
                     <div className="lg:col-span-2 space-y-4">
                         <Link href="/" className="flex items-center space-x-3 group w-fit text-white decoration-0 hover:no-underline font-black italic uppercase text-lg">
                             <div className="h-10 w-10 rounded-2xl bg-white p-2 flex items-center justify-center transition-all duration-500 group-hover:rotate-12 group-hover:scale-105 shadow-xl shadow-black/20">
-                                <img 
+                                <Image 
                                     src="/logo.png" 
-                                    alt="Sugarcane Auction Logo" 
+                                    alt="Bids Awesome Logo" 
+                                    width={40}
+                                    height={40}
                                     className="w-full h-full object-contain"
                                 />
                             </div>
-                            <span>Sugarcane Auction</span>
+                            <span>Bids Awesome</span>
                         </Link>
                         <p className="text-white/60 max-w-sm leading-relaxed text-xs font-medium">
                             The premier digital marketplace for sugarcane auctions. 
@@ -101,7 +104,7 @@ export default function Footer() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="space-y-0.5 text-center md:text-left">
                             <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">
-                                © {new Date().getFullYear()} Sugarcane Auction. All rights reserved.
+                                © {new Date().getFullYear()} Bids Awesome. All rights reserved.
                             </p>
                             <p className="text-white/10 text-[8px] font-bold uppercase tracking-tighter">
                                 Built with Next.js 15, Tailwind CSS, and ❤️

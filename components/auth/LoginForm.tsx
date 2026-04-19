@@ -68,10 +68,10 @@ export default function LoginForm() {
                 {/* Header */}
                 <div className="mb-4 flex flex-col items-center">
                     <div className="mb-4">
-                        <Image src="/logo.png" alt="BIDS Logo" width={80} height={80} className="h-10 w-auto object-contain" />
+                        <Image src="/logo.png" alt="Bids Awesome Logo" width={80} height={80} className="h-10 w-auto object-contain" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-1">Welcome to BIDS</h1>
-                    <p className="text-gray-500 text-sm">Find new ideas to try</p>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-1">Welcome to Bids Awesome</h1>
+                    <p className="text-gray-500 text-sm">Nepal's Premier Bidding Platform</p>
                 </div>
 
                 {/* Form */}
@@ -145,10 +145,10 @@ export default function LoginForm() {
                 </form>
 
                 <div className="mt-6 text-[11px] text-gray-500 leading-tight">
-                    By continuing, you agree to BIDS&apos;s <a href="#" className="text-gray-800 font-bold hover:underline">Terms of Service</a> and acknowledge you&apos;ve read our <a href="#" className="text-gray-800 font-bold hover:underline">Privacy Policy</a>.
+                    By continuing, you agree to Bids Awesome's <a href="#" className="text-gray-800 font-bold hover:underline">Terms of Service</a> and acknowledge you&apos;ve read our <a href="#" className="text-gray-800 font-bold hover:underline">Privacy Policy</a>.
                     <div className="border-t border-gray-200 my-3 w-10 mx-auto"></div>
                     <Link href="/auth/registration" scroll={false} replace className="text-gray-800 font-bold hover:underline text-xs">
-                        Not on BIDS yet? Sign up
+                        Not on Bids Awesome yet? Sign up
                     </Link>
                 </div>
             </div>
@@ -157,7 +157,7 @@ export default function LoginForm() {
             <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
                 <Image
                     src="/sugarcane_auction.png"
-                    alt="Sugarcane Auction Nepal"
+                    alt="Bids Awesome Nepal"
                     fill
                     className="object-cover"
                 />

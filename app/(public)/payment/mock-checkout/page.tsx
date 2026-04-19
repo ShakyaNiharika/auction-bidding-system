@@ -112,7 +112,7 @@ function MockCheckoutContent() {
                                     type="text"
                                     value={otp}
                                     onChange={(e) => setOtp(e.target.value)}
-                                    className="w-full h-12 px-4 border border-gray-300 rounded focus:ring-2 focus:ring-[#5E32BA] outline-none text-center text-lg tracking-widest font-bold"
+                                    className="w-full h-12 px-4 border text-gray-700 border-gray-300 rounded focus:ring-2 focus:ring-[#5E32BA] outline-none text-center text-lg tracking-widest font-bold"
                                     placeholder="• • • • • •"
                                     maxLength={6}
                                     required
