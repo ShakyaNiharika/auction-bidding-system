@@ -4,6 +4,7 @@ import QueryProvider from '@/providers/QueryProvider';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { SocketProvider } from '@/context/SocketContext';
+import WhatsAppFloatingButton from '@/components/layout/WhatsAppFloatingButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
             <SocketProvider>
               {children}
               {modal}
+              <WhatsAppFloatingButton />
             </SocketProvider>
           </AuthProvider>
         </QueryProvider>
