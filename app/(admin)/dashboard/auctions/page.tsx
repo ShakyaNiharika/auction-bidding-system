@@ -4,11 +4,12 @@ import { useGetMyAuctions, useGetAuctions } from '@/hooks/auction/useAuctionQuer
 import { useDeleteAuction } from '@/hooks/auction/useDeleteAuction';
 import { useAuth } from '@/context/AuthContext';
 import { Auction } from '@/types/auction';
-import { Gavel, Plus, Edit2, Trash2, ExternalLink, User } from 'lucide-react';
+import { Gavel, Plus, Edit2, Trash2, ExternalLink, User, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import AuctionLiveModal from '@/components/auction/AuctionLiveModal';
+import AuctionBiddersModal from '@/components/auction/AuctionBiddersModal';
 
 export default function MyAuctionsPage() {
     const { user } = useAuth();
@@ -26,10 +27,19 @@ export default function MyAuctionsPage() {
     const [activeTab, setActiveTab] = useState('All');
     const [isLiveModalOpen, setIsLiveModalOpen] = useState(false);
     const [liveAuctionId, setLiveAuctionId] = useState<string | null>(null);
+    
+    // Bidders Modal state
+    const [isBiddersModalOpen, setIsBiddersModalOpen] = useState(false);
+    const [biddersAuction, setBiddersAuction] = useState<{ id: string, title: string } | null>(null);
 
     const handleConfirmDelete = (id: string, title: string) => {
         setSelectedAuction({ id, title });
         setIsConfirmOpen(true);
+    };
+
+    const handleViewBidders = (id: string, title: string) => {
+        setBiddersAuction({ id, title });
+        setIsBiddersModalOpen(true);
     };
 
     const performDelete = () => {
@@ -173,6 +183,13 @@ export default function MyAuctionsPage() {
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex items-center justify-end gap-2 transition-opacity">
                                             <button
+                                                onClick={() => handleViewBidders(auction._id, auction.title)}
+                                                title="View Bidders"
+                                                className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                                            >
+                                                <Users size={18} />
+                                            </button>
+                                            <button
                                                 onClick={() => handleViewLive(auction._id)}
                                                 title="View Live"
                                                 className="p-2 text-gray-400 hover:text-[#1b4332] transition-colors"
@@ -215,6 +232,13 @@ export default function MyAuctionsPage() {
                 isOpen={isLiveModalOpen}
                 onClose={() => setIsLiveModalOpen(false)}
                 auctionId={liveAuctionId || ''}
+            />
+
+            <AuctionBiddersModal
+                isOpen={isBiddersModalOpen}
+                onClose={() => setIsBiddersModalOpen(false)}
+                auctionId={biddersAuction?.id || ''}
+                auctionTitle={biddersAuction?.title || ''}
             />
         </div>
     );

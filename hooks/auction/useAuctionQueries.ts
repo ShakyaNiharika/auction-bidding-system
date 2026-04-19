@@ -120,3 +120,21 @@ export const useGetDashboardStats = (): UseQueryResult<any, unknown> => {
         retry: false,
     });
 };
+
+export const useGetAuctionBids = (id: string): UseQueryResult<any[], unknown> => {
+    return useQuery({
+        queryKey: ["auction-bids", id],
+        queryFn: async () => {
+            try {
+                const response = await api.get(`auctions/${id}/bids`);
+                return response?.data;
+            } catch (error: any) {
+                const errorMessage = error?.response?.data?.message || "Failed to fetch bids";
+                toast.error(errorMessage);
+                throw new Error(errorMessage);
+            }
+        },
+        enabled: !!id,
+        retry: false,
+    });
+};
