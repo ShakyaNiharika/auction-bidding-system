@@ -1,10 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { X, MessageCircle, MessageSquare } from 'lucide-react';
+import { X, MessageSquare } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function WhatsAppFloatingButton() {
     const [isOpen, setIsOpen] = useState(false);
+    const pathname = usePathname();
+
+    if (pathname?.startsWith('/dashboard')) {
+        return null;
+    }
     
     // Replace with your actual WhatsApp Number
     const whatsappNumber = "9761897298"; 

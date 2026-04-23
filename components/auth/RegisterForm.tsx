@@ -82,14 +82,14 @@ export default function RegisterForm() {
                 {/* Header */}
                 <div className="mb-4 flex flex-col items-center">
                     <div className="mb-4">
-                        <Image src="/logo.png" alt="Bids Awesome Logo" width={80} height={80} className="h-10 w-auto object-contain" />
+                        <Image src="/logo.png" alt="Bids Awesome Logo" width={80} height={80} className="h-20 w-auto object-contain" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-1">Registration page</h1>
                     <p className="text-gray-500 text-sm">Create your account to get started</p>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-3 max-w-sm mx-auto w-full text-left">
+                <form onSubmit={handleSubmit} noValidate className="space-y-3 max-w-sm mx-auto w-full text-left">
                     <div className="grid grid-cols-2 gap-3">
                         <div>
                             <label className="text-xs font-medium text-gray-600 ml-1 mb-1 block">First Name</label>

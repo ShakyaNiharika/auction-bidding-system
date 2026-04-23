@@ -41,12 +41,12 @@ export default function Footer() {
                     {/* Brand Section */}
                     <div className="lg:col-span-2 space-y-4">
                         <Link href="/" className="flex items-center space-x-3 group w-fit text-white decoration-0 hover:no-underline font-black italic uppercase text-lg">
-                            <div className="h-10 w-10 rounded-2xl bg-white p-2 flex items-center justify-center transition-all duration-500 group-hover:rotate-12 group-hover:scale-105 shadow-xl shadow-black/20">
+                            <div className="h-14 w-14 rounded-2xl bg-white p-2 flex items-center justify-center transition-all duration-500 group-hover:rotate-12 group-hover:scale-105 shadow-xl shadow-black/20">
                                 <Image 
                                     src="/logo.png" 
                                     alt="Bids Awesome Logo" 
-                                    width={40}
-                                    height={40}
+                                    width={64}
+                                    height={64}
                                     className="w-full h-full object-contain"
                                 />
                             </div>

@@ -9,7 +9,7 @@ export default function SettingsPage() {
     const sections = [
         { name: 'Profile Information', desc: 'Update your personal details and business info.', icon: User },
         { name: 'Notifications', desc: 'Manage how you receive updates about your auctions.', icon: Bell },
-        { name: 'Security', desc: 'Update your password and account security settings.', icon: Shield },
+        // { name: 'Security', desc: 'Update your password and account security settings.', icon: Shield },
         { name: 'Payment Methods', desc: 'Manage where you receive funds from successful bids.', icon: CreditCard },
     ];
 

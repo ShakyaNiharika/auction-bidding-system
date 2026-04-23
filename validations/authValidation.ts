@@ -3,8 +3,8 @@ import * as yup from 'yup';
 export const loginSchema = yup.object().shape({
     email: yup
         .string()
-        .email('Please enter a valid email address')
-        .required('Email is required'),
+        .email('Valid Email Address is required')
+        .required('Valid Email Address is required'),
     password: yup
         .string()
         .required('Password is required'),
@@ -21,8 +21,8 @@ export const registerSchema = yup.object().shape({
         .min(2, 'Last name must be at least 2 characters'),
     email: yup
         .string()
-        .email('Please enter a valid email address')
-        .required('Email is required'),
+        .email('Valid Email Address is required')
+        .required('Valid Email Address is required'),
     username: yup
         .string()
         .required('Username is required')

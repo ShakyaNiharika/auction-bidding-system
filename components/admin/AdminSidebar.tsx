@@ -49,12 +49,12 @@ export default function AdminSidebar() {
             {/* Logo Area */}
             <div className="p-8">
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-gray-100 group-hover:scale-110 transition-transform border border-gray-100">
+                    <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-gray-100 group-hover:scale-110 transition-transform border border-gray-100">
                         <Image
                             src="/logo.png"
                             alt="Logo"
-                            width={40}
-                            height={40}
+                            width={64}
+                            height={64}
                             className="w-full h-full object-contain"
                         />
                     </div>

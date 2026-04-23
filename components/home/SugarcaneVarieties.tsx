@@ -37,10 +37,10 @@ export default function SugarcaneVarieties() {
         <section className="py-24 bg-white">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col items-center mb-16 gap-6 text-center">
-                    <h2 className="text-4xl md:text-5xl font-black text-[#1b4332] tracking-tighter">
+                    <h2 className="text-3xl font-bold text-gray-900">
                         Sugarcane Varieties
                     </h2>
-                    <p className="text-xl text-gray-400 font-medium">
+                    <p className="text-gray-500 mb-2">
                         खरिद बिक्रीको लागि उपलब्ध गन्नाका उत्कृष्ट प्रजातिहरू
                     </p>
                     <button

@@ -53,3 +53,13 @@ export const useUpdateUser = () => {
         }
     });
 };
+
+export const useGetStats = (): UseQueryResult<{ farmers: number, mills: number }, unknown> => {
+    return useQuery({
+        queryKey: ["user-stats"],
+        queryFn: async () => {
+            const response = await api.get("users/stats");
+            return response?.data;
+        },
+    });
+};

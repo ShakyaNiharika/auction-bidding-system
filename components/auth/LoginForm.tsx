@@ -68,7 +68,7 @@ export default function LoginForm() {
                 {/* Header */}
                 <div className="mb-4 flex flex-col items-center">
                     <div className="mb-4">
-                        <Image src="/logo.png" alt="Bids Awesome Logo" width={80} height={80} className="h-10 w-auto object-contain" />
+                        <Image src="/logo.png" alt="Bids Awesome Logo" width={80} height={80} className="h-20 w-auto object-contain" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-1">Welcome to Bids Awesome</h1>
                     <p className="text-gray-500 text-sm">Nepal's Premier Bidding Platform</p>

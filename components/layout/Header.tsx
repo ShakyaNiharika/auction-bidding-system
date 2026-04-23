@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import Button from '../ui/custom-button/Button';
 import { useAuth } from '@/context/AuthContext';
-import { User, LogOut, ChevronDown, UserCircle2, LayoutDashboard } from 'lucide-react';
+import { User, LogOut, ChevronDown, UserCircle2, LayoutDashboard, Search } from 'lucide-react';
 import NotificationBell from './NotificationBell';
 
 const navigation = [
@@ -19,6 +19,7 @@ const navigation = [
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const pathname = usePathname();
     const router = useRouter();
     const { user, logout, isLoading } = useAuth();
@@ -34,6 +35,15 @@ export default function Header() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/auctions?q=${encodeURIComponent(searchQuery.trim())}`);
+            setSearchQuery('');
+            setIsMenuOpen(false);
+        }
+    };
 
     // Check which auth page is active
     const isLoginPage = pathname === '/auth/loginPage';
@@ -51,12 +61,12 @@ export default function Header() {
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-3 group">
-                            <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
-                                <Image 
-                                    src="/logo.png" 
-                                    alt="Bids Awesome Logo" 
-                                    width={40}
-                                    height={40}
+                            <div className="relative w-14 h-14 transition-transform duration-300 group-hover:scale-110">
+                                <Image
+                                    src="/logo.png"
+                                    alt="Bids Awesome Logo"
+                                    width={64}
+                                    height={64}
                                     className="w-full h-full object-contain"
                                 />
                             </div>
@@ -87,9 +97,24 @@ export default function Header() {
 
                     {/* Right Side Actions */}
                     <div className="flex items-center space-x-4">
-                        {/* Search Button */}
-                        <button className="p-2 text-gray-600 hover:text-gray-900">
-                            {/* Search icon */}
+                        {/* Search Bar (Desktop) */}
+                        <form onSubmit={handleSearch} className="hidden lg:flex items-center relative">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search auctions..."
+                                className="w-48 xl:w-64 bg-gray-100 text-gray-900 border-transparent focus:bg-white focus:border-[#1b4332]/20 focus:ring-4 focus:ring-[#1b4332]/5 h-10 px-4 pl-10 rounded-full text-sm font-medium transition-all outline-none"
+                            />
+                            <Search className="absolute left-3.5 text-gray-400" size={16} />
+                        </form>
+
+                        {/* Search Button (Mobile/Tablet) */}
+                        <button
+                            className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                            onClick={() => setIsMenuOpen(true)}
+                        >
+                            <Search size={20} />
                         </button>
 
                         {/* Auth / Account Buttons */}
@@ -206,6 +231,19 @@ export default function Header() {
                 {/* Mobile Menu */}
                 {isMenuOpen && (
                     <div className="md:hidden border-t py-4 animate-in slide-in-from-top duration-300">
+                        {/* Mobile Search */}
+                        <div className="px-4 mb-4 lg:hidden">
+                            <form onSubmit={handleSearch} className="relative">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search auctions..."
+                                    className="w-full bg-gray-100 border-transparent focus:bg-white h-12 px-4 pl-12 rounded-2xl text-sm font-medium transition-all outline-none"
+                                />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            </form>
+                        </div>
                         <div className="flex flex-col space-y-3">
                             {navigation.map((item) => (
                                 <Link

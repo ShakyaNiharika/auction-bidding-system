@@ -14,11 +14,12 @@ function AuctionsContent() {
     const searchParams = useSearchParams();
     const variety = searchParams.get('variety');
     const status = searchParams.get('status') || undefined;
+    const query = searchParams.get('q') || '';
     
     const { data: auctions, isLoading } = useGetAuctions(
         50, // limit
         1,  // page
-        '', // keyword
+        query, // keyword
         variety || undefined,
         status
     );
@@ -42,10 +43,10 @@ function AuctionsContent() {
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="mb-12">
-                <h1 className="text-4xl font-black text-gray-900 mb-4 uppercase tracking-tight">
-                    {variety ? `Auctions for ${variety}` : 'All Sugarcane Auctions'}
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    {query ? `Search Results for "${query}"` : (variety ? `Auctions for ${variety}` : 'All Sugarcane Auctions')}
                 </h1>
-                <p className="text-gray-500 font-medium">
+                <p className="text-gray-500 mt-2">
                     {auctions?.length || 0} auctions found in the marketplace
                 </p>
             </div>

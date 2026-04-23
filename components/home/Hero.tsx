@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import Button from '@/components/ui/custom-button/Button';
 import { CheckCircle2 } from 'lucide-react';
+import { useGetStats } from '@/hooks/user/useUserQueries';
 
 export default function Hero() {
+    const { data: stats } = useGetStats();
+
     return (
         <section className="relative w-full h-[600px] md:h-[700px] flex items-center overflow-hidden">
             {/* Background Image with Overlay */}
@@ -38,11 +41,11 @@ export default function Hero() {
                     <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-white font-bold text-sm md:text-base">
                         <div className="flex items-center gap-2 drop-shadow-md">
                             <CheckCircle2 className="text-orange-400" size={22} strokeWidth={3} />
-                            <span>500+ Farmers Registered</span>
+                            <span>{stats?.farmers || "40 +"} Farmers Registered</span>
                         </div>
                         <div className="flex items-center gap-2 drop-shadow-md">
                             <CheckCircle2 className="text-orange-400" size={22} strokeWidth={3} />
-                            <span>25+ Mills Active</span>
+                            <span>{stats?.mills || "10 +"} Mills Active</span>
                         </div>
                     </div>
 

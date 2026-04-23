@@ -6,8 +6,8 @@ import { useGetMyAuctions, useGetMyBids } from '@/hooks/auction/useAuctionQuerie
 import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/ui/custom-button/Button';
 import EditProfileModal from '@/components/profile/EditProfileModal';
-import { 
-    User, Mail, Phone, MapPin, Calendar, Shield, 
+import {
+    User, Mail, Phone, MapPin, Calendar, Shield,
     Gavel, Award, Clock, Edit3, Loader2, LogOut,
     ExternalLink, Camera
 } from 'lucide-react';
@@ -49,21 +49,21 @@ export default function ProfilePage() {
     }
 
     const stats = [
-        { 
-            label: profile.role === 'seller' ? 'Active Auctions' : 'Unique Bids', 
-            value: profile.role === 'seller' ? (myAuctions?.filter(a => a.status === 'active').length || 0) : (myBids?.length || 0), 
+        {
+            label: profile.role === 'seller' ? 'Active Auctions' : 'Unique Bids',
+            value: profile.role === 'seller' ? (myAuctions?.filter(a => a.status === 'active').length || 0) : (myBids?.length || 0),
             icon: Gavel,
             color: 'bg-blue-50 text-blue-600'
         },
-        { 
-            label: profile.role === 'seller' ? 'Total Auctions' : 'Won Auctions', 
-            value: profile.role === 'seller' ? (myAuctions?.length || 0) : (profile.role === 'admin' ? '—' : '0'), 
+        {
+            label: profile.role === 'seller' ? 'Total Auctions' : 'Won Auctions',
+            value: profile.role === 'seller' ? (myAuctions?.length || 0) : (profile.role === 'admin' ? '—' : '0'),
             icon: Award,
             color: 'bg-green-50 text-green-600'
         },
-        { 
-            label: 'Member Since', 
-            value: new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), 
+        {
+            label: 'Member Since',
+            value: new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
             icon: Clock,
             color: 'bg-purple-50 text-purple-600'
         }
@@ -77,10 +77,10 @@ export default function ProfilePage() {
                     <div className="relative group">
                         <div className="w-32 h-32 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white">
                             {profile.profile_picture ? (
-                                <img 
-                                    src={`${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/$/, '')}${profile.profile_picture}`} 
-                                    alt={profile.username} 
-                                    className="w-full h-full object-cover" 
+                                <img
+                                    src={`${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/$/, '')}${profile.profile_picture}`}
+                                    alt={profile.username}
+                                    className="w-full h-full object-cover"
                                 />
                             ) : (
                                 <div className="w-full h-full bg-red-50 flex items-center justify-center text-red-400">
@@ -88,7 +88,7 @@ export default function ProfilePage() {
                                 </div>
                             )}
                         </div>
-                        <button 
+                        <button
                             onClick={() => setIsEditModalOpen(true)}
                             className="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full shadow-lg border border-gray-100 flex items-center justify-center text-gray-600 hover:text-red-500 transition-all active:scale-95"
                         >
@@ -113,7 +113,7 @@ export default function ProfilePage() {
                             </p>
 
                             <div className="mt-8 flex flex-col gap-3">
-                                <Button 
+                                <Button
                                     onClick={() => setIsEditModalOpen(true)}
                                     className="w-full py-4 rounded-2xl font-black shadow-lg shadow-red-500/10 flex items-center justify-center gap-2"
                                 >
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                                         </Button>
                                     </Link>
                                 )}
-                                <button 
+                                <button
                                     onClick={() => logout()}
                                     className="w-full py-4 rounded-2xl font-bold text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all flex items-center justify-center gap-2 mt-2"
                                 >
@@ -162,56 +162,110 @@ export default function ProfilePage() {
                                 </div>
                                 Personal Information
                             </h2>
-                            
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                <InfoItem 
-                                    icon={Mail} 
-                                    label="Email Address" 
-                                    value={profile.email} 
+                                <InfoItem
+                                    icon={Mail}
+                                    label="Email Address"
+                                    value={profile.email}
                                     verified={true}
                                 />
-                                <InfoItem 
-                                    icon={Phone} 
-                                    label="Phone Number" 
-                                    value={profile.phone_number} 
+                                <InfoItem
+                                    icon={Phone}
+                                    label="Phone Number"
+                                    value={profile.phone_number}
                                 />
-                                <InfoItem 
-                                    icon={MapPin} 
-                                    label="Address" 
-                                    value={profile.address || 'No address added yet'} 
+                                <InfoItem
+                                    icon={MapPin}
+                                    label="Address"
+                                    value={profile.address || 'No address added yet'}
                                 />
-                                <InfoItem 
-                                    icon={Calendar} 
-                                    label="Date of Birth" 
-                                    value={profile.date_of_birth ? new Date(profile.date_of_birth).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set'} 
+                                <InfoItem
+                                    icon={Calendar}
+                                    label="Date of Birth"
+                                    value={profile.date_of_birth ? new Date(profile.date_of_birth).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set'}
                                 />
                             </div>
                         </div>
 
-                        <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100 relative overflow-hidden group">
-                           <div className="absolute top-0 right-0 w-32 h-32 bg-red-50/50 rounded-bl-[100%] transition-transform group-hover:scale-110 duration-700" />
-                           
-                            <h2 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-                                    <Shield size={16} />
+
+
+                        {/* Bid History Section */}
+                        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
+                            <h2 className="text-xl font-black text-gray-900 mb-8 border-b border-gray-50 pb-6 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-[#1b4332]/10 flex items-center justify-center text-[#1b4332]">
+                                    <Clock size={16} />
                                 </div>
-                                Account Security
+                                Bid History
                             </h2>
-                            <p className="text-gray-500 text-sm mb-8 max-w-lg">
-                                Your account is secured with password protection. We recommend changing your password every few months to keep your account safe.
-                            </p>
-                            <Button variant="outline" className="rounded-2xl font-bold px-8">
-                                Change Password
-                            </Button>
+
+                            {!myBids || myBids.length === 0 ? (
+                                <div className="text-center py-10">
+                                    <p className="text-gray-400 font-medium">You haven't placed any bids yet.</p>
+                                    <Link href="/auctions">
+                                        <button className="text-[#1b4332] font-black mt-2 hover:underline">Browse Auctions</button>
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {myBids.map((bid: any) => (
+                                        <div key={bid.auction._id} className="flex items-center justify-between p-5 rounded-2xl bg-gray-50/50 border border-gray-100 hover:border-red-100 transition-all group">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 bg-white rounded-xl border border-gray-100 overflow-hidden shrink-0 group-hover:scale-110 transition-transform">
+                                                    {bid.auction.images?.[0] ? (
+                                                        <img
+                                                            src={`${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/$/, '')}${bid.auction.images[0]}`}
+                                                            alt={bid.auction.title}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                            <Gavel size={20} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <Link href={`/auctions/${bid.auction._id}`}>
+                                                        <p className="font-bold text-gray-900 group-hover:text-red-600 transition-colors leading-tight">
+                                                            {bid.auction.title}
+                                                        </p>
+                                                    </Link>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-sm ${bid.auction.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                                            }`}>
+                                                            {bid.auction.status}
+                                                        </span>
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
+                                                            Last bid: {new Date(bid.bidTime).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-sm font-black text-gray-900 leading-none mb-1">
+                                                    Rs. {bid.myLastBid.toLocaleString()}
+                                                </p>
+                                                {bid.auction.winner?._id === profile._id ? (
+                                                    <span className="text-[10px] font-black uppercase text-green-600">Won</span>
+                                                ) : bid.auction.status === 'completed' ? (
+                                                    <span className="text-[10px] font-black uppercase text-red-400">Outbid</span>
+                                                ) : (
+                                                    <span className="text-[10px] font-black uppercase text-blue-500">Your Last Bid</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <EditProfileModal 
-                isOpen={isEditModalOpen} 
-                onClose={() => setIsEditModalOpen(false)} 
-                profile={profile} 
+            <EditProfileModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                profile={profile}
             />
         </div>
     );
